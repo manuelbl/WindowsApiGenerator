@@ -1,0 +1,154 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>net.codecrete.windows-api</groupId>
+  <artifactId>windows-api-tests</artifactId>
+  <version>0.8.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>Windows API Tests</name>
+  <description>Integration tests for validating that generated code</description>
+  <url>https://github.com/manuelbl/JavaWindowsAPI-incubator</url>
+
+  <properties>
+    <maven.compiler.release>24</maven.compiler.release>
+    <maven.compiler.source>24</maven.compiler.source>
+    <maven.compiler.target>24</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+    <assertj.version>3.27.3</assertj.version>
+    <junit.version>5.12.0</junit.version>
+    <maven-core.version>3.9.9</maven-core.version>
+    <maven-compiler-plugin.version>3.14.0</maven-compiler-plugin.version>
+    <maven-surefire-plugin.version>3.5.2</maven-surefire-plugin.version>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>${junit.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-bom</artifactId>
+        <version>${assertj.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>net.codecrete.windows-api</groupId>
+        <artifactId>windowsapi-maven-plugin</artifactId>
+        <version>0.8.0-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>windows-api</goal>
+            </goals>
+            <configuration>
+              <functions>
+                <function>CreateUri</function>
+                <function>FormatMessageW</function>
+                <function>FormatMessageW</function>
+                <function>GdipCreateBitmapFromScan0</function>
+                <function>GdipCreatePen1</function>
+                <function>GdipCreateSolidFill</function>
+                <function>GdipDeleteBrush</function>
+                <function>GdipDeleteGraphics</function>
+                <function>GdipDeletePen</function>
+                <function>GdipDisposeImage</function>
+                <function>GdipDrawArcI</function>
+                <function>GdipFillEllipseI</function>
+                <function>GdipFillRectangleI</function>
+                <function>GdipGetImageEncoders</function>
+                <function>GdipGetImageEncodersSize</function>
+                <function>GdipGetImageGraphicsContext</function>
+                <function>GdipSaveImageToFile</function>
+                <function>GdipSetSmoothingMode</function>
+                <function>GdipSetSolidFillColor</function>
+                <function>GdiplusShutdown</function>
+                <function>GdiplusStartup</function>
+                <function>GetCurrentProcess</function>
+                <function>GetModuleHandleW</function>
+                <function>GetModuleHandleW</function>
+                <function>GetProcessMemoryInfo</function>
+                <function>LocalFree</function>
+                <function>LocalFree</function>
+                <function>RegCloseKey</function>
+                <function>RegOpenKeyExW</function>
+                <function>RegQueryValueExW</function>
+                <function>StringFromGUID2</function>
+                <function>SysFreeString</function>
+              </functions>
+              <enumerations>
+                <enumeration>FORMAT_MESSAGE_OPTIONS</enumeration>
+              </enumerations>
+              <constants>
+                <constant>DEVPKEY_Device_FriendlyName</constant>
+                <constant>GUID_DEVCLASS_BLUETOOTH</constant>
+                <constant>HKEY_CLASSES_ROOT</constant>
+                <constant>HKEY_CURRENT_CONFIG</constant>
+                <constant>HKEY_CURRENT_USER</constant>
+                <constant>HKEY_LOCAL_MACHINE</constant>
+                <constant>HKEY_USERS</constant>
+                <constant>KERNEL_LOGGER_NAMEA</constant>
+                <constant>KERNEL_LOGGER_NAMEW</constant>
+              </constants>
+              <structs>
+                <struct>DHCP_ALL_OPTIONS</struct>
+                <struct>FILE_ID_BOTH_DIR_INFO</struct>
+                <struct>INTERNET_CACHE_CONFIG_INFOW</struct>
+                <struct>NT_CONSOLE_PROPS </struct>
+                <struct>SR_RESOURCE_TYPE_REPLICATED_PARTITION_ARRAY</struct>
+                <struct>TASKDIALOGCONFIG</struct>
+                <struct>TF_LANGBARITEMINFO</struct>
+                <struct>UConverterToUnicodeArgs</struct>
+                <struct>USB_DESCRIPTOR_REQUEST</struct>
+                <struct>WINUSB_SETUP_PACKET</struct>
+                <struct>_DEV_BROADCAST_USERDEFINED</struct>
+              </structs>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>${maven-compiler-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven-surefire-plugin.version}</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+
+</project>

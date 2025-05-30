@@ -1,0 +1,59 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>net.codecrete.windows-api</groupId>
+  <artifactId>user_notification</artifactId>
+  <version>0.8.0-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>user_notification</name>
+  <description>Kotlin Maven project using COM to display user notification</description>
+  <url>https://github.com/manuelbl/JavaWindowsAPI-incubator</url>
+
+  <properties>
+    <maven.compiler.release>24</maven.compiler.release>
+    <maven.compiler.source>24</maven.compiler.source>
+    <maven.compiler.target>24</maven.compiler.target>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>net.codecrete.windows-api</groupId>
+        <artifactId>windowsapi-maven-plugin</artifactId>
+        <version>0.8.0-SNAPSHOT</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>windows-api</goal>
+            </goals>
+            <configuration>
+              <functions>
+                <function>CoCreateInstance</function>
+                <function>CoInitializeEx</function>
+                <function>GetModuleHandleW</function>
+                <function>FormatMessageW</function>
+                <function>LocalFree</function>
+              </functions>
+              <comInterfaces>
+                <comInterface>IUserNotification2</comInterface>
+              </comInterfaces>
+              <enumerations>
+                <enumeration>COINIT</enumeration>
+                <enumeration>NOTIFY_ICON_INFOTIP_FLAGS</enumeration>
+              </enumerations>
+              <constants>
+                <constant>E_INVALIDARG</constant>
+                <constant>E_NOINTERFACE</constant>
+                <constant>S_FALSE</constant>
+                <constant>S_OK</constant>
+                <constant>UserNotification</constant>
+              </constants>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

@@ -1,0 +1,11 @@
+*.nupkg
+.idea/
+target/
+.vs/
+bin/
+obj/
+integration-tests/full-build/src/
+integration-tests/windows-api-tests/mickey.png
+.gradle
+.kotlin
+build
