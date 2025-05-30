@@ -9,7 +9,7 @@
 
   <name>messagebox</name>
   <description>Example showing how to use the Maven plug-in</description>
-  <url>https://github.com/manuelbl/JavaWindowsAPI-incubator</url>
+  <url>https://github.com/manuelbl/WindowsApiGenerator</url>
 
   <properties>
     <maven.compiler.release>24</maven.compiler.release>

@@ -26,7 +26,7 @@ class ComTest {
     void IURI_works() {
         try (var arena = Arena.ofConfined()) {
             var uriHolder = arena.allocate(ADDRESS);
-            var uriString = arena.allocateFrom("https://github.com/manuelbl", UTF_16LE);
+            var uriString = arena.allocateFrom("https://github.com/manuelbl/WindowsApiGenerator", UTF_16LE);
             var result = CreateUri(uriString, Uri_CREATE_CANONICALIZE, 0, uriHolder);
             WindowsErrorAssert.assertThat(result).isSuccessful();
 

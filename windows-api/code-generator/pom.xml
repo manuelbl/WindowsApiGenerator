@@ -14,9 +14,9 @@
 
   <packaging>jar</packaging>
 
-  <name>Windows API Code Generator</name>
+  <name>Windows API Code Generator Library</name>
   <description>Generates Java FFM code for the Windows API</description>
-  <url>https://github.com/manuelbl/JavaWindowsAPI-incubator</url>
+  <url>https://github.com/manuelbl/WindowsApiGenerator</url>
 
   <dependencies>
     <dependency>

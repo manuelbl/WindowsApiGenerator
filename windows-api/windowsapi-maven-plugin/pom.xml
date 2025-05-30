@@ -16,7 +16,7 @@
 
   <name>Windows API Code Generator Maven Plugin</name>
   <description>Maven plugin to generate Java bindings for the Windows API</description>
-  <url>https://github.com/manuelbl/JavaWindowsAPI-incubator</url>
+  <url>https://github.com/manuelbl/WindowsApiGenerator</url>
 
   <dependencies>
     <dependency>

@@ -8,8 +8,8 @@
   <packaging>jar</packaging>
 
   <name>user_notification</name>
-  <description>Kotlin Maven project using COM to display user notification</description>
-  <url>https://github.com/manuelbl/JavaWindowsAPI-incubator</url>
+  <description>Java Maven project using COM to display user notification</description>
+  <url>https://github.com/manuelbl/WindowsApiGenerator</url>
 
   <properties>
     <maven.compiler.release>24</maven.compiler.release>

@@ -8,8 +8,8 @@
   <packaging>jar</packaging>
 
   <name>Windows API Tests</name>
-  <description>Integration tests for validating that generated code</description>
-  <url>https://github.com/manuelbl/JavaWindowsAPI-incubator</url>
+  <description>Integration tests for validating the generated code</description>
+  <url>https://github.com/manuelbl/WindowsApiGenerator</url>
 
   <properties>
     <maven.compiler.release>24</maven.compiler.release>
