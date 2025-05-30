@@ -3,7 +3,7 @@ name: Continuous Integration
 on: [push, pull_request]
 
 env:
-  MAVEN_ARGS: -B -V -ntp -e -Djansi.passthrough=true -Dstyle.color=always
+  MAVEN_ARGS: -B -V -ntp -e -Djansi.passthrough=true -Dstyle.color=always -Xmx4g
 
 jobs:
 
@@ -18,6 +18,8 @@ jobs:
         java-version: '24'
         distribution: 'temurin'
         cache: maven
+    - name: Show Java Options
+      run: java -XX:+PrintFlagsFinal -version
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
     - name: Build library
