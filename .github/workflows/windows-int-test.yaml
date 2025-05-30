@@ -19,11 +19,11 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build library
-      run: mvn $MAVEN_ARG install
+      run: mvn install
       working-directory: ./windowsapi-code-generator
     - name: Build Maven plug-in
-      run: mvn $MAVEN_ARG install
+      run: mvn install
       working-directory: ./windowsapi-maven-plugin
     - name: Windows API tests
-      run: mvn $MAVEN_ARG verify
+      run: mvn verify
       working-directory: ./integration-tests/windows-api-tests
