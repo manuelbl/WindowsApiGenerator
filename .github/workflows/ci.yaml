@@ -19,8 +19,6 @@ jobs:
         java-version: '24'
         distribution: 'temurin'
         cache: maven
-    - name: Show Java Options
-      run: java -XX:+PrintFlagsFinal -version
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
     - name: Build library

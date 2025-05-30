@@ -21,6 +21,7 @@
     <maven-failsafe-plugin.version>3.5.3</maven-failsafe-plugin.version>
     <maven-install-plugin.version>3.1.4</maven-install-plugin.version>
     <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
+    <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
     <maven-project-info-reports-plugin.version>3.6.1</maven-project-info-reports-plugin.version>
     <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
     <maven-surefire-plugin.version>3.5.3</maven-surefire-plugin.version>
@@ -47,6 +48,12 @@
       <url>https://github.com/manuelbl</url>
     </developer>
   </developers>
+
+  <scm>
+    <connection>scm:git:https://github.com/manuelbl/WindowsApiGenerator.git</connection>
+    <developerConnection>scm:git:https://github.com/manuelbl/WindowsApiGenerator.git</developerConnection>
+    <url>https://github.com/manuelbl/WindowsApiGenerator</url>
+  </scm>
 
   <dependencyManagement>
     <dependencies>
@@ -81,6 +88,25 @@
   </dependencies>
 
   <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <release>21</release>
+          <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+        </configuration>
+      </plugin>
+    </plugins>
+
     <pluginManagement>
       <plugins>
         <plugin>
@@ -88,32 +114,36 @@
           <version>${maven-clean-plugin.version}</version>
         </plugin>
         <plugin>
-          <artifactId>maven-resources-plugin</artifactId>
-          <version>${maven-resources-plugin.version}</version>
-        </plugin>
-        <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${maven-compiler-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <version>${maven-surefire-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-jar-plugin</artifactId>
-          <version>${maven-jar-plugin.version}</version>
-        </plugin>
-        <plugin>
-          <artifactId>maven-install-plugin</artifactId>
-          <version>${maven-install-plugin.version}</version>
         </plugin>
         <plugin>
           <artifactId>maven-deploy-plugin</artifactId>
           <version>${maven-deploy-plugin.version}</version>
         </plugin>
         <plugin>
+          <artifactId>maven-install-plugin</artifactId>
+          <version>${maven-install-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${maven-jar-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-javadoc-plugin</artifactId>
+          <version>${maven-javadoc-plugin.version}</version>
+        </plugin>
+        <plugin>
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>${maven-project-info-reports-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-resources-plugin</artifactId>
+          <version>${maven-resources-plugin.version}</version>
+        </plugin>
+        <plugin>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven-surefire-plugin.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>

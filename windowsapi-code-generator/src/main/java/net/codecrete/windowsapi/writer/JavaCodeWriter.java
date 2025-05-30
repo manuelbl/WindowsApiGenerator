@@ -30,7 +30,14 @@ import java.util.UUID;
  */
 @SuppressWarnings("java:S1192")
 class JavaCodeWriter<T extends Type> {
+    /**
+     * Shared generation context.
+     */
     protected final GenerationContext generationContext;
+
+    /**
+     * Void type.
+     */
     protected final Primitive voidType;
 
     /**
@@ -541,6 +548,11 @@ class JavaCodeWriter<T extends Type> {
         writer.println("     */");
     }
 
+    /**
+     * Writes the type's documentation URL to the top level comment (if available).
+     *
+     * @param type the type
+     */
     protected void writeDocumentationUrl(Type type) {
         var documentationUrl = type.documentationUrl();
         if (documentationUrl != null) {

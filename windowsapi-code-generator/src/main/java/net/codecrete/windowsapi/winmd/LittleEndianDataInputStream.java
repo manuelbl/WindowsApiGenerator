@@ -74,6 +74,12 @@ public class LittleEndianDataInputStream {
         }
     }
 
+    /**
+     * Skips several bytes without further processing.
+     *
+     * @param n the number of bytes to skip
+     * @throws IOException thrown if an IO error occurs
+     */
     public void skipNBytes(int n) throws IOException {
         if (n < 0)
             throw new IOException("Cannot skip backwards");
@@ -89,7 +95,6 @@ public class LittleEndianDataInputStream {
 
     /**
      * Skips to the specified offset.
-     * </p>
      *
      * @param offset number of bytes into the steam
      * @throws EOFException if the offset is after the end of the stream

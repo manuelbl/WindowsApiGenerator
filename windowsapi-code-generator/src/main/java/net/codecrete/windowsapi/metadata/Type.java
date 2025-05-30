@@ -18,10 +18,28 @@ import static java.util.regex.Pattern.CASE_INSENSITIVE;
 public abstract sealed class Type
         permits Struct, Delegate, Primitive, Pointer, Array, TypeAlias, EnumType, ComInterface {
 
+    /**
+     * The type name.
+     */
     protected String name;
+    /**
+     * The native type name.
+     */
     protected final String nativeName;
+    /**
+     * The namespace this type belongs to.
+     * <p>
+     * Not set for nested types.
+     * </p>
+     */
     protected final Namespace namespace;
+    /**
+     * The {@code TypeDef} index in the metadata file.
+     */
     protected final int typeDefIndex;
+    /**
+     * The documentation URL.
+     */
     protected LazyString documentationUrl;
 
     /**

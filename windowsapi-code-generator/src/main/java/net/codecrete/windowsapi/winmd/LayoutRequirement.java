@@ -57,6 +57,12 @@ public record LayoutRequirement(int size, int alignment) {
         return new LayoutRequirement(type.arrayLength() * requirement.size(), requirement.alignment());
     }
 
+    /**
+     * Gets the size of a primitive type.
+     *
+     * @param type the primitive type
+     * @return the size (in bytes)
+     */
     public static int primitiveSize(Primitive type) {
         return switch (type.kind()) {
             case PrimitiveKind.INT64, PrimitiveKind.UINT64, PrimitiveKind.DOUBLE, PrimitiveKind.INT_PTR,
@@ -68,6 +74,11 @@ public record LayoutRequirement(int size, int alignment) {
         };
     }
 
+    /**
+     * Gets the layout requirement for a primitive type.
+     * @param type the primitive type
+     * @return the layout requirement
+     */
     public static LayoutRequirement forPrimitive(Primitive type) {
         var size = primitiveSize(type);
         return new LayoutRequirement(size, size);

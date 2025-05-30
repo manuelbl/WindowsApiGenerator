@@ -211,6 +211,8 @@ public class Scope {
      * For invalid function names, error events are emitted.
      * But no exception is thrown.
      * </p>
+     *
+     * @param functions the functions
      */
     public void addFunctions(Set<String> functions) {
         var foundFunctions = metadata.findFunctions(functions);

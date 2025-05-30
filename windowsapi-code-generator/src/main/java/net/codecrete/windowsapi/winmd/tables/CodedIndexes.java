@@ -41,16 +41,25 @@ public class CodedIndexes {
 
     private static final int UNUSED_TABLE = 63;
 
+    /**
+     * Tables for in {@code TypeDefOrRef} coded index.
+     */
     public static final int[] TYPE_DEF_OR_REF_TABLES = new int[]{
             TYPE_DEF,
             TYPE_REF,
             TYPE_SPEC
     };
+    /**
+     * Tables for in {@code HasConstant} coded index.
+     */
     public static final int[] HAS_CONSTANT_TABLES = new int[]{
             FIELD,
             PARAM,
             PROPERTY
     };
+    /**
+     * Tables for in {@code HasCustomAttribute} coded index.
+     */
     public static final int[] HAS_CUSTOM_ATTRIBUTE_TABLES = new int[]{
             METHOD_DEF,
             FIELD,
@@ -75,15 +84,24 @@ public class CodedIndexes {
             GENERIC_PARAM_CONSTRAINT,
             METHOD_SPEC
     };
+    /**
+     * Tables for in {@code FieldMarshal} coded index.
+     */
     public static final int[] HAS_FIELD_MARSHAL_TABLES = new int[]{
             FIELD,
             PARAM
     };
+    /**
+     * Tables for in {@code HasDeclSecurity} coded index.
+     */
     public static final int[] HAS_DECL_SECURITY_TABLES = new int[]{
             TYPE_DEF,
             METHOD_DEF,
             ASSEMBLY
     };
+    /**
+     * Tables for in {@code MemberRefParent} coded index.
+     */
     public static final int[] MEMBER_REF_PARENT_TABLES = new int[]{
             TYPE_DEF,
             TYPE_REF,
@@ -91,23 +109,38 @@ public class CodedIndexes {
             METHOD_DEF,
             TYPE_SPEC
     };
-    public static final int[] HAS_SEMATICS_TABLES = new int[]{
+    /**
+     * Tables for in {@code HasSemantics} coded index.
+     */
+    public static final int[] HAS_SEMANTICS_TABLES = new int[]{
             EVENT,
             PROPERTY
     };
+    /**
+     * Tables for in {@code MethodDefOrRef} coded index.
+     */
     public static final int[] METHOD_DEF_OR_REF_TABLES = new int[]{
             METHOD_DEF,
             MEMBER_REF
     };
+    /**
+     * Tables for in {@code MemberForwarded} coded index.
+     */
     public static final int[] MEMBER_FORWARDED_TABLES = new int[]{
             FIELD,
             METHOD_DEF
     };
+    /**
+     * Tables for in {@code Implementation} coded index.
+     */
     public static final int[] IMPLEMENTATION_TABLES = new int[]{
             FILE,
             ASSEMBLY_REF,
             EXPORTED_TYPE
     };
+    /**
+     * Tables for in {@code CustomAttributeType} coded index.
+     */
     public static final int[] CUSTOM_ATTRIBUTE_TYPE_TABLES = new int[]{
             UNUSED_TABLE,
             UNUSED_TABLE,
@@ -115,12 +148,18 @@ public class CodedIndexes {
             MEMBER_REF,
             UNUSED_TABLE
     };
+    /**
+     * Tables for in {@code ResolutionScope} coded index.
+     */
     public static final int[] RESOLUTION_SCOPE_TABLES = new int[]{
             MODULE,
             MODULE_REF,
             ASSEMBLY_REF,
             TYPE_REF
     };
+    /**
+     * Tables for in {@code TypeOrMethodDef} coded index.
+     */
     public static final int[] TYPE_OR_METHOD_DEF_TABLES = new int[]{
             TYPE_DEF,
             METHOD_DEF

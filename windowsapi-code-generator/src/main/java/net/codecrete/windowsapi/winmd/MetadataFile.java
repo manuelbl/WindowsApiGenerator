@@ -36,7 +36,7 @@ import static net.codecrete.windowsapi.winmd.tables.CodedIndexes.HAS_CONSTANT_TA
 import static net.codecrete.windowsapi.winmd.tables.CodedIndexes.HAS_CUSTOM_ATTRIBUTE_TABLES;
 import static net.codecrete.windowsapi.winmd.tables.CodedIndexes.HAS_DECL_SECURITY_TABLES;
 import static net.codecrete.windowsapi.winmd.tables.CodedIndexes.HAS_FIELD_MARSHAL_TABLES;
-import static net.codecrete.windowsapi.winmd.tables.CodedIndexes.HAS_SEMATICS_TABLES;
+import static net.codecrete.windowsapi.winmd.tables.CodedIndexes.HAS_SEMANTICS_TABLES;
 import static net.codecrete.windowsapi.winmd.tables.CodedIndexes.IMPLEMENTATION_TABLES;
 import static net.codecrete.windowsapi.winmd.tables.CodedIndexes.MEMBER_FORWARDED_TABLES;
 import static net.codecrete.windowsapi.winmd.tables.CodedIndexes.MEMBER_REF_PARENT_TABLES;
@@ -653,7 +653,7 @@ public class MetadataFile {
         var hasFieldMarshalIndexWidth = codedIndexWidth(HAS_FIELD_MARSHAL_TABLES);
         var hasDeclSecurityIndexWidth = codedIndexWidth(HAS_DECL_SECURITY_TABLES);
         var memberRefParentIndexWidth = codedIndexWidth(MEMBER_REF_PARENT_TABLES);
-        var hasSemanticsIndexWidth = codedIndexWidth(HAS_SEMATICS_TABLES);
+        var hasSemanticsIndexWidth = codedIndexWidth(HAS_SEMANTICS_TABLES);
         var methodDefOrRefIndexWidth = codedIndexWidth(METHOD_DEF_OR_REF_TABLES);
         memberForwardedIndexWidth = codedIndexWidth(MEMBER_FORWARDED_TABLES);
         var implementationIndexWidth = codedIndexWidth(IMPLEMENTATION_TABLES);

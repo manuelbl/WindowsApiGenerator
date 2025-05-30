@@ -50,6 +50,13 @@ public class WindowsApiRun {
     private Set<String> constants = new HashSet<>();
 
     /**
+     * Creates a new instance.
+     */
+    public WindowsApiRun() {
+        // default constructor
+    }
+
+    /**
      * Gets the directory for generating the source code.
      * <p>
      * The specified directory is the root directory for packages and subpackages.
@@ -316,26 +323,22 @@ public class WindowsApiRun {
         try {
             Files.walkFileTree(outputDirectory, new FileVisitor<>() {
                 @Override
-                @SuppressWarnings("NullableProblems")
                 public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) {
                     return FileVisitResult.CONTINUE;
                 }
 
                 @Override
-                @SuppressWarnings("NullableProblems")
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
                     Files.delete(file);
                     return FileVisitResult.CONTINUE;
                 }
 
                 @Override
-                @SuppressWarnings("NullableProblems")
                 public FileVisitResult visitFileFailed(Path file, IOException exc) {
                     throw new UncheckedIOException("Unable to clean output directory " + outputDirectory, exc);
                 }
 
                 @Override
-                @SuppressWarnings("NullableProblems")
                 public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
                     if (!dir.equals(outputDirectory))
                         Files.delete(dir);

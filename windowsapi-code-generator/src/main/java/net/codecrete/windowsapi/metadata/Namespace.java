@@ -89,6 +89,11 @@ public class Namespace {
         methods.put(method.name(), method);
     }
 
+    /**
+     * Adds a constant to the namespace.
+     *
+     * @param constant the constant
+     */
     public void addConstant(ConstantValue constant) {
         assert !constants.containsKey(constant.name());
         constants.put(constant.name(), constant);
