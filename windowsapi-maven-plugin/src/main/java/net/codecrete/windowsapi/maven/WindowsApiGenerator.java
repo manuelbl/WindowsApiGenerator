@@ -31,6 +31,14 @@ import java.util.List;
  */
 @Mojo(name = "windows-api", defaultPhase = LifecyclePhase.GENERATE_SOURCES, threadSafe = true)
 public class WindowsApiGenerator extends AbstractMojo {
+
+    /**
+     * Creates a new instance.
+     */
+    public WindowsApiGenerator() {
+        // default constructor
+    }
+
     /**
      * The Maven project context.
      */
@@ -142,8 +150,8 @@ public class WindowsApiGenerator extends AbstractMojo {
 
             run.generateCode();
 
-        } catch (Throwable t) {
-            throw new MojoExecutionException("Failed to generate Windows API bindings", t);
+        } catch (Exception e) {
+            throw new MojoExecutionException("Failed to generate Windows API bindings", e);
         }
     }
 
