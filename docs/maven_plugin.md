@@ -25,7 +25,7 @@ and configure an execution:
         <plugin>
         <groupId>net.codecrete.windows-api</groupId>
         <artifactId>windowsapi-maven-plugin</artifactId>
-        <version>0.8.0-SNAPSHOT</version>
+        <version>0.8.0</version>
         <executions>
             <execution>
                 <goals>
@@ -85,7 +85,7 @@ in the project, etc.:
 <plugin>
     <groupId>net.codecrete.windows-api</groupId>
     <artifactId>windowsapi-maven-plugin</artifactId>
-    <version>0.8.0-SNAPSHOT</version>
+    <version>0.8.0</version>
     <executions>
         <execution>
         <goals>

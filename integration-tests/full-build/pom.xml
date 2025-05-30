@@ -4,7 +4,7 @@
 
   <groupId>net.codecrete.windows-api</groupId>
   <artifactId>full-build</artifactId>
-  <version>0.8.0-SNAPSHOT</version>
+  <version>0.8.0</version>
 
   <packaging>jar</packaging>
   <name>full-build</name>

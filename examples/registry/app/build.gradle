@@ -1,7 +1,7 @@
 plugins {
     id 'application'
 
-    id "net.codecrete.windows-api" version "0.8.0-SNAPSHOT"
+    id "net.codecrete.windows-api" version "0.8.0"
 }
 
 repositories {

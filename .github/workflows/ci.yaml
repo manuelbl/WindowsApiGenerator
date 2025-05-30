@@ -24,7 +24,7 @@ jobs:
       run: mvn $MAVEN_ARG install
       working-directory: ./windows-api
     - name: Generate full Windows API
-      run: java --class-path windows-api/code-generator/target/test-classes:windows-api/code-generator/target/code-generator-0.8.0-SNAPSHOT.jar net.codecrete.windowsapi.special.FullBuild full-build/src/main/java
+      run: java --class-path windows-api/code-generator/target/test-classes:windows-api/code-generator/target/code-generator-0.8.0.jar net.codecrete.windowsapi.special.FullBuild full-build/src/main/java
     - name: Build full Windows API
       run: mvn $MAVEN_ARG package
       working-directory: ./integration-tests/full-build

@@ -15,7 +15,7 @@ Add the Windows API Maven plugin to `<build>` / `<plugins>` section in your `pom
       <plugin>
         <groupId>net.codecrete.windows-api</groupId>
         <artifactId>windowsapi-maven-plugin</artifactId>
-        <version>0.8.0-SNAPSHOT</version>
+        <version>0.8.0</version>
         <executions>
           <execution>
             <goals>
