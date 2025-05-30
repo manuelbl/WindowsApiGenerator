@@ -21,6 +21,12 @@ jobs:
         cache: maven
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
+    - name: Configure unit test GPG key
+      run: |
+        echo -n "$UNIT_TEST_SIGNING_KEY" | base64 --decode | gpg --import
+      env:
+        UNIT_TEST_SIGNING_KEY: ${{ vars.UNIT_TEST_SIGNING_KEY }}
+      shell: bash
     - name: Build library
       run: mvn install
       working-directory: ./windowsapi-code-generator

@@ -22,6 +22,7 @@
     <maven-core.version>3.8.5</maven-core.version>
     <maven-deploy-plugin.version>3.1.4</maven-deploy-plugin.version>
     <maven-failsafe-plugin.version>3.5.3</maven-failsafe-plugin.version>
+    <maven-gpg-plugin.version>3.2.7</maven-gpg-plugin.version>
     <maven-install-plugin.version>3.1.4</maven-install-plugin.version>
     <maven-jar-plugin.version>3.4.2</maven-jar-plugin.version>
     <maven-javadoc-plugin.version>3.11.2</maven-javadoc-plugin.version>
@@ -138,6 +139,10 @@
           <version>${maven-deploy-plugin.version}</version>
         </plugin>
         <plugin>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>${maven-gpg-plugin.version}</version>
+        </plugin>
+        <plugin>
           <artifactId>maven-install-plugin</artifactId>
           <version>${maven-install-plugin.version}</version>
         </plugin>
@@ -183,6 +188,19 @@
             <id>help-goal</id>
             <goals>
               <goal>helpmojo</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-gpg-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>sign-artifacts</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>sign</goal>
             </goals>
           </execution>
         </executions>
