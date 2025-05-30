@@ -1,0 +1,26 @@
+name: Windows Integration Tests
+
+on: [push, pull_request]
+
+env:
+  MAVEN_ARGS: -B -V -ntp -e -Djansi.passthrough=true -Dstyle.color=always
+
+jobs:
+
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up JDK 24
+      uses: actions/setup-java@v4
+      with:
+        java-version: '24'
+        distribution: 'temurin'
+        cache: maven
+    - name: Build library, Maven plug-in
+      run: mvn $MAVEN_ARG install
+      working-directory: ./windows-api
+    - name: Windows API tests
+      run: mvn $MAVEN_ARG verify
+      working-directory: ./integration-tests/windows-api-tests

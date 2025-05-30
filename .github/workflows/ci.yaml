@@ -1,0 +1,48 @@
+name: Continuous Integration
+
+on: [push, pull_request]
+
+env:
+  MAVEN_ARGS: -B -V -ntp -e -Djansi.passthrough=true -Dstyle.color=always
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup JDK 24
+      uses: actions/setup-java@v4
+      with:
+        java-version: '24'
+        distribution: 'temurin'
+        cache: maven
+    - name: Setup Gradle
+      uses: gradle/actions/setup-gradle@v4
+    - name: Build library, Maven plug-in
+      run: mvn $MAVEN_ARG install
+      working-directory: ./windows-api
+    - name: Generate full Windows API
+      run: java --class-path windows-api/code-generator/target/test-classes:windows-api/code-generator/target/code-generator-0.8.0-SNAPSHOT.jar net.codecrete.windowsapi.special.FullBuild full-build/src/main/java
+    - name: Build full Windows API
+      run: mvn $MAVEN_ARG package
+      working-directory: ./integration-tests/full-build
+    - name: Build gradle plug-in
+      run: ./gradlew check publishToMavenLocal
+      working-directory: ./windowsapi-gradle-plugin
+    - name: Build messagebox example
+      run: mvn $MAVEN_ARG compile
+      working-directory: ./examples/messagebox
+    - name: Build registry example
+      run: ./gradlew assemble
+      working-directory: ./examples/registry
+    - name: Build window enumeration example
+      run: ./gradlew assemble
+      working-directory: ./examples/enum_windows
+    - name: Build user notification example (Java)
+      run: mvn $MAVEN_ARG compile
+      working-directory: ./examples/user_notification_java
+    - name: Build user notification example (Kotlin)
+      run: mvn $MAVEN_ARG compile
+      working-directory: ./examples/user_notification_kotlin
