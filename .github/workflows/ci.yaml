@@ -20,15 +20,18 @@ jobs:
         cache: maven
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v4
-    - name: Build library, Maven plug-in
+    - name: Build library
       run: mvn $MAVEN_ARG install
-      working-directory: ./windows-api
+      working-directory: ./windowsapi-code-generator
     - name: Generate full Windows API
-      run: java --class-path windows-api/code-generator/target/test-classes:windows-api/code-generator/target/code-generator-0.8.0.jar net.codecrete.windowsapi.special.FullBuild full-build/src/main/java
+      run: java --class-path windowsapi-code-generator/target/test-classes:windowsapi-code-generator/target/code-generator-0.8.0.jar net.codecrete.windowsapi.special.FullBuild integration-tests/full-build/src/main/java
     - name: Build full Windows API
       run: mvn $MAVEN_ARG package
       working-directory: ./integration-tests/full-build
-    - name: Build gradle plug-in
+    - name: Build Maven plug-in
+      run: mvn $MAVEN_ARG install
+      working-directory: ./windowsapi-maven-plugin
+    - name: Build Gradle plug-in
       run: ./gradlew check publishToMavenLocal
       working-directory: ./windowsapi-gradle-plugin
     - name: Build messagebox example
