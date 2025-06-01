@@ -1,7 +1,7 @@
 settingsEvaluated {
     pluginManagement {
         repositories {
-            maven(url = "file:../../gradle-plugin-repo")
+            maven(url = uri("../gradle-plugin-repo"))
             gradlePluginPortal()
         }
     }
