@@ -92,6 +92,10 @@ tasks.shadowJar {
     archiveClassifier = ""
 }
 
+signing {
+    useGpgCmd()
+}
+
 publishing {
     repositories {
         maven {
