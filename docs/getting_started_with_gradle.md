@@ -2,21 +2,7 @@
 
 _Note: These instructions are for Gradle with Groovy DSL. For Kotlin DSL, see the [enum_windows](../examples/enum_windows/README.md) example project._
 
-## Step 1: Add the Maven repository
-
-At the very top of `settings.gradle`, add the Maven repository where the Windows API plugin is hosted. The Gradle plugin portal (`gradlePluginPortal()`) is the default repository and needs to be specified as well:
-
-```groovy
-pluginManagement {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
-    }
-}
-```
-
-
-## Step 2: Declare the Plugin
+## Step 1: Declare the Plugin
 
 In your `build.gradle` file, declare the Windows API plugin in the `plugins` section:
 
@@ -27,7 +13,7 @@ plugins {
 ```
 
 
-## Step 3: Configure the Plugin
+## Step 2: Configure the Plugin
 
 In `build.gradle`, add a block to configure the plugin.
 
@@ -38,7 +24,7 @@ generateWindowsApi {
 ```
 
 
-## Step 4: Generate the Code
+## Step 3: Generate the Code
 
 ```bash
 gradle generateWindowsApi
@@ -47,7 +33,7 @@ gradle generateWindowsApi
 Alternatively, the task can be run from the IDE.
 
 
-## Step 5: Use the Generated Code
+## Step 4: Use the Generated Code
 
 The generated code can now be used in Java or Kotlin code:
 

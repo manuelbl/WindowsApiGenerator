@@ -21,20 +21,6 @@ plugins {
 }
 ```
 
-### Repositories
-
-Since the plugin is distributed through Maven Central, it needs to be included as a repository in the top-level `settings.gradle` or `settings.gradle.kts` file:
-
-**Groovy DSL / Kotlin DSL**
-```groovy
-pluginManagement {
-    repositories {
-        mavenLocal()
-        gradlePluginPortal()
-    }
-}
-```
-
 ## Tasks
 
 The plugin adds a number of tasks to the project:

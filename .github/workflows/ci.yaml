@@ -39,16 +39,16 @@ jobs:
       run: mvn install
       working-directory: ./windowsapi-maven-plugin
     - name: Build Gradle plug-in
-      run: ./gradlew check publishToMavenLocal
+      run: ./gradlew check publish
       working-directory: ./windowsapi-gradle-plugin
     - name: Build messagebox example
       run: mvn compile
       working-directory: ./examples/messagebox
     - name: Build registry example
-      run: ./gradlew assemble
+      run: ./gradlew --init-script ../init.gradle.kts assemble
       working-directory: ./examples/registry
     - name: Build window enumeration example
-      run: ./gradlew assemble
+      run: ./gradlew --init-script ../init.gradle.kts assemble
       working-directory: ./examples/enum_windows
     - name: Build user notification example (Java)
       run: mvn compile

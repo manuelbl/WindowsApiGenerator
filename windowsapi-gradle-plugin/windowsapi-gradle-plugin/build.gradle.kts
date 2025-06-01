@@ -2,13 +2,13 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    // Apply the Java Gradle plugin development plugin to add support for developing Gradle plugins
-    `java-gradle-plugin`
+    id("com.gradle.plugin-publish") version "1.2.1"
 
-    // Apply the Kotlin JVM plugin to add support for Kotlin.
     alias(libs.plugins.kotlin.jvm)
 
-    `maven-publish`
+    signing
+
+    id("com.gradleup.shadow") version "8.3.6"
 }
 
 group = "net.codecrete.windows-api"
@@ -62,8 +62,20 @@ testing {
 
 gradlePlugin {
     plugins {
+        website = "https://github.com/manuelbl/WindowsApiGenerator"
+        vcsUrl = "https://github.com/manuelbl/WindowsApiGenerator.git"
+
         create("windowsApiGenerate") {
             id = "net.codecrete.windows-api"
+            displayName = "Windows API Generator"
+            description = """
+                A plugin for generating Java code to the Windows APIs.
+                
+                Using metadata provided by Microsoft, the plugin generates function calls, struct/union
+                layouts and accessors, callback function, enumerations, constants and code for COM interfaces.
+                The generated code relies on the Java Foreign Function & Memory (FFM) API.
+                """.trimIndent()
+            tags = listOf("windows", "ffm", "generator")
             implementationClass = "net.codecrete.windowsapi.gradle.WindowsApiPlugin"
         }
     }
@@ -76,8 +88,15 @@ tasks.named<Task>("check") {
     dependsOn(testing.suites.named("functionalTest"))
 }
 
+tasks.shadowJar {
+    archiveClassifier = ""
+}
+
 publishing {
     repositories {
-        mavenLocal()
+        maven {
+            name = "localPluginRepository"
+            url = uri("../../gradle-plugin-repo")
+        }
     }
 }
