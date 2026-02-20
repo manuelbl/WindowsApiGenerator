@@ -19,7 +19,7 @@ import net.codecrete.windowsapi.metadata.Type;
 import net.codecrete.windowsapi.metadata.TypeAlias;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -39,10 +39,10 @@ public class Scope {
     private static final String ENUMERATION_MEMBER_SINGLE = "%s Enumeration \"%s\" contains a member with that name. " +
             "Specify the enumeration instead of the constant.";
 
-    private final Set<Type> typeSet = new HashSet<>();
-    private final Set<Method> methodSet = new HashSet<>();
-    private final Set<ConstantValue> constantSet = new HashSet<>();
-    private final Set<Type> transitiveScope = new HashSet<>();
+    private final Set<Type> typeSet = new LinkedHashSet<>();
+    private final Set<Method> methodSet = new LinkedHashSet<>();
+    private final Set<ConstantValue> constantSet = new LinkedHashSet<>();
+    private final Set<Type> transitiveScope = new LinkedHashSet<>();
     private final Metadata metadata;
     private final EventListener eventListener;
     private boolean hasInvalidArguments = false;

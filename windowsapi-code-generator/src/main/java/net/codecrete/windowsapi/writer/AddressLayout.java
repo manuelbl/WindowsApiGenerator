@@ -20,7 +20,7 @@ import net.codecrete.windowsapi.metadata.TypeAlias;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -129,7 +129,7 @@ record AddressLayout(boolean aligned,
      * @return the required address layouts
      */
     static List<AddressLayout> requiredLayouts(Struct struct) {
-        var addressLayouts = new HashSet<AddressLayout>();
+        var addressLayouts = new LinkedHashSet<AddressLayout>();
         addLayoutsRecursively(struct, struct.packageSize(), addressLayouts);
         return filteredAndSorted(addressLayouts);
     }
@@ -141,7 +141,7 @@ record AddressLayout(boolean aligned,
      * @return the required address layouts
      */
     static List<AddressLayout> requiredLayouts(Collection<Method> functions) {
-        var addressLayouts = new HashSet<AddressLayout>();
+        var addressLayouts = new LinkedHashSet<AddressLayout>();
         functions.stream().flatMap(Method::referencedTypes).forEach(it -> addLayout(it, addressLayouts));
         return filteredAndSorted(addressLayouts);
     }

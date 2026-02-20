@@ -7,7 +7,7 @@
 package net.codecrete.windowsapi.metadata;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -143,7 +143,7 @@ public final class Struct extends Type {
      */
     public void addNestedType(Type nestedType) {
         if (nestedTypes == null)
-            nestedTypes = new HashMap<>();
+            nestedTypes = new LinkedHashMap<>();
         assert !nestedTypes.containsKey(nestedType.name());
         nestedTypes.put(nestedType.name(), nestedType);
     }

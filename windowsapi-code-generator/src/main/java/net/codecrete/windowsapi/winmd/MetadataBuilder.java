@@ -31,7 +31,7 @@ import net.codecrete.windowsapi.winmd.tables.TypeDef;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -65,7 +65,7 @@ public class MetadataBuilder implements TypeLookup {
     private final VariantTransformation variantTransformation;
     private final Primitive[] primitiveTypes = new Primitive[15];
     private final CustomAttributeDecoder customAttributeDecoder;
-    private final Map<Integer, Namespace> apiTypes = new HashMap<>();
+    private final Map<Integer, Namespace> apiTypes = new LinkedHashMap<>();
     private final SignatureDecoder signatureDecoder;
     private final Primitive intPtrType;
     private final Primitive uintPtrType;

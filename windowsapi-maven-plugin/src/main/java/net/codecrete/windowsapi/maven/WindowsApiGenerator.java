@@ -16,7 +16,7 @@ import org.apache.maven.project.MavenProject;
 
 import java.io.File;
 import java.nio.file.Path;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 
 /**
@@ -151,17 +151,17 @@ public class WindowsApiGenerator extends AbstractMojo {
         run.setEventListener(new EventLogger(getLog()));
 
         if (functions != null)
-            run.setFunctions(new HashSet<>(functions));
+            run.setFunctions(new LinkedHashSet<>(functions));
         if (structs != null)
-            run.setStructs(new HashSet<>(structs));
+            run.setStructs(new LinkedHashSet<>(structs));
         if (enumerations != null)
-            run.setEnumerations(new HashSet<>(enumerations));
+            run.setEnumerations(new LinkedHashSet<>(enumerations));
         if (callbackFunctions != null)
-            run.setCallbackFunctions(new HashSet<>(callbackFunctions));
+            run.setCallbackFunctions(new LinkedHashSet<>(callbackFunctions));
         if (comInterfaces != null)
-            run.setComInterfaces(new HashSet<>(comInterfaces));
+            run.setComInterfaces(new LinkedHashSet<>(comInterfaces));
         if (constants != null)
-            run.setConstants(new HashSet<>(constants));
+            run.setConstants(new LinkedHashSet<>(constants));
 
         run.setOutputDirectory(sourceFolder);
         run.setBasePackage(basePackage != null ? basePackage : "");

@@ -17,7 +17,7 @@ import net.codecrete.windowsapi.metadata.TypeAlias;
 import net.codecrete.windowsapi.winmd.LayoutRequirement;
 
 import java.util.Comparator;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -520,7 +520,7 @@ class StructCodeWriter extends JavaCodeWriter<Struct> {
     }
 
     private static Set<Struct> getUnalignedMemberStructs(Struct struct, int packageSize) {
-        var unalignedStructs = new HashSet<Struct>();
+        var unalignedStructs = new LinkedHashSet<Struct>();
         collectUnalignedMemberStructs(struct, packageSize, unalignedStructs);
         return unalignedStructs;
     }

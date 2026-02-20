@@ -8,7 +8,7 @@ package net.codecrete.windowsapi.metadata;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,13 +25,13 @@ import static java.util.stream.Collectors.toMap;
  */
 @SuppressWarnings({"java:S4274", "java:S1192"})
 public class Metadata {
-    private final Map<String, Namespace> namespaces = new HashMap<>();
+    private final Map<String, Namespace> namespaces = new LinkedHashMap<>();
     private final Namespace unnamedNamespace = new Namespace(null);
-    private final Map<Integer, Type> typesByDefinitionIndex = new HashMap<>();
-    private final Map<Integer, Method> methodsByMethodDefIndex = new HashMap<>();
+    private final Map<Integer, Type> typesByDefinitionIndex = new LinkedHashMap<>();
+    private final Map<Integer, Method> methodsByMethodDefIndex = new LinkedHashMap<>();
     private final Map<PrimitiveKind, Primitive> primitivesByKind = buildPrimitiveTypes(unnamedNamespace);
-    private final Map<Type, Pointer> pointersByType = new HashMap<>();
-    private final Map<Integer, TypeAlias> aliasesByTypeDefIndex = new HashMap<>();
+    private final Map<Type, Pointer> pointersByType = new LinkedHashMap<>();
+    private final Map<Integer, TypeAlias> aliasesByTypeDefIndex = new LinkedHashMap<>();
 
     /**
      * Creates a new instance.

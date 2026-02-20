@@ -6,7 +6,7 @@
 //
 package net.codecrete.windowsapi.metadata;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -18,9 +18,9 @@ import java.util.Map;
 @SuppressWarnings("java:S4274")
 public class Namespace {
     private final String name;
-    private final Map<String, Type> types = new HashMap<>();
-    private final Map<String, Method> methods = new HashMap<>();
-    private final Map<String, ConstantValue> constants = new HashMap<>();
+    private final Map<String, Type> types = new LinkedHashMap<>();
+    private final Map<String, Method> methods = new LinkedHashMap<>();
+    private final Map<String, ConstantValue> constants = new LinkedHashMap<>();
 
     /**
      * Creates a new instance.

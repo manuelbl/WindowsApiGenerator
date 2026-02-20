@@ -17,8 +17,8 @@ import net.codecrete.windowsapi.metadata.Struct;
 import net.codecrete.windowsapi.metadata.Type;
 import net.codecrete.windowsapi.metadata.TypeAlias;
 
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -45,8 +45,8 @@ class VariantTransformation {
     private static final int ARM64_OFFSET = 1000000;
 
     private final Metadata metadata;
-    private final HashMap<String, HashMap<Integer, Type>> typeVariants = new HashMap<>();
-    private final Set<Integer> unsupportedVariants = new HashSet<>();
+    private final Map<String, Map<Integer, Type>> typeVariants = new LinkedHashMap<>();
+    private final Set<Integer> unsupportedVariants = new LinkedHashSet<>();
 
     VariantTransformation(Metadata metadata) {
         this.metadata = metadata;
@@ -77,7 +77,7 @@ class VariantTransformation {
             return false;
 
         assert type instanceof Struct || type instanceof Delegate;
-        var variants = typeVariants.computeIfAbsent(type.name(), k -> new HashMap<>());
+        var variants = typeVariants.computeIfAbsent(type.name(), k -> new LinkedHashMap<>());
         variants.put(architecture, type);
         if (type instanceof Struct struct)
             struct.setArchitectureSpecific(true);
@@ -126,7 +126,7 @@ class VariantTransformation {
      * </p>
      */
     void splitCombinedVariants() {
-        var architectureSpecificCache = new HashMap<Type, Boolean>();
+        var architectureSpecificCache = new LinkedHashMap<Type, Boolean>();
 
         // identify types that are indirectly architecture-specific
         var indirectlySpecificTypes = metadata.types()
@@ -136,8 +136,8 @@ class VariantTransformation {
                 .map(Struct.class::cast)
                 .collect(Collectors.toSet());
 
-        var x64Replacements = new HashMap<Type, Type>();
-        var arm64Replacements = new HashMap<Type, Type>();
+        var x64Replacements = new LinkedHashMap<Type, Type>();
+        var arm64Replacements = new LinkedHashMap<Type, Type>();
 
         // create two separate variants for each indirectly architecture-specific type
         for (var type : indirectlySpecificTypes) {

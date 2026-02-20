@@ -22,7 +22,7 @@ import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -135,7 +135,7 @@ public class CodeWriter extends JavaCodeWriter<Type> {
      */
     public void write(Scope scope) {
         if (!isDryRun)
-            generatedFiles = new HashSet<>();
+            generatedFiles = new LinkedHashSet<>();
         scope.getTransitiveTypeScope().forEach(this::writeType);
         scope.getFunctions().forEach(functionCodeWriter::writeFunctions);
         scope.getConstants().forEach(constantCodeWriter::writeConstants);

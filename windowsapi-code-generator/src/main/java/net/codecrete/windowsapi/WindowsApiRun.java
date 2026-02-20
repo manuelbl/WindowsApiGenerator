@@ -22,7 +22,7 @@ import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 /**
@@ -44,12 +44,12 @@ public class WindowsApiRun {
     private String basePackage = "";
     private EventListener eventListener = new NullEventListener();
 
-    private Set<String> structs = new HashSet<>();
-    private Set<String> functions = new HashSet<>();
-    private Set<String> enumerations = new HashSet<>();
-    private Set<String> callbackFunctions = new HashSet<>();
-    private Set<String> comInterfaces = new HashSet<>();
-    private Set<String> constants = new HashSet<>();
+    private Set<String> structs = new LinkedHashSet<>();
+    private Set<String> functions = new LinkedHashSet<>();
+    private Set<String> enumerations = new LinkedHashSet<>();
+    private Set<String> callbackFunctions = new LinkedHashSet<>();
+    private Set<String> comInterfaces = new LinkedHashSet<>();
+    private Set<String> constants = new LinkedHashSet<>();
 
     /**
      * Creates a new instance.
