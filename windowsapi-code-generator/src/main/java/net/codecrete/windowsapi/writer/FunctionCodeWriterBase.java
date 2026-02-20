@@ -84,12 +84,18 @@ class FunctionCodeWriterBase<T extends Type> extends JavaCodeWriter<T> {
      */
     protected void writeFunctionSignatureParameters(Method function) {
         var parameters = function.parameters();
-        if (function.supportsLastError())
-            writer.print("MemorySegment lastErrorState");
+        var supportsAllocator = function.supportsAllocator();
+        var supportsLastError = function.supportsLastError();
+
+        if (supportsAllocator)
+            writer.print("SegmentAllocator allocator");
+        if (supportsLastError)
+            writer.printf("%sMemorySegment lastErrorState",
+                    supportsAllocator ? ", " : "");
 
         for (int i = 0; i < parameters.length; i += 1) {
             writer.printf("%s%s %s",
-                    i > 0 || function.supportsLastError() ? ", " : "",
+                    i > 0 || supportsAllocator || supportsLastError ? ", " : "",
                     getJavaType(parameters[i].type()),
                     getJavaSafeName(parameters[i].name()));
         }
@@ -113,13 +119,16 @@ class FunctionCodeWriterBase<T extends Type> extends JavaCodeWriter<T> {
                 %1$stry {
                 %1$s    %2$s%3$s""", indent, returnWithCast, invoke);
 
+        var supportsAllocator = function.supportsAllocator();
         var supportsLastError = function.supportsLastError();
+        if (supportsAllocator)
+            writer.print("allocator");
         if (supportsLastError)
-            writer.print("lastErrorState");
+            writer.printf("%slastErrorState", supportsAllocator ? ", " : "");
 
         var parameters = function.parameters();
         for (int i = 0; i < parameters.length; i += 1) {
-            writer.print(i > 0 || supportsLastError ? ", " : "");
+            writer.print(i > 0 || supportsAllocator || supportsLastError ? ", " : "");
             writer.print(getJavaSafeName(parameters[i].name()));
         }
         writer.println(");");

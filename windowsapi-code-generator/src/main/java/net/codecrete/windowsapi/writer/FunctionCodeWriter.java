@@ -20,7 +20,9 @@ import java.util.Objects;
  */
 class FunctionCodeWriter extends FunctionCodeWriterBase<Type> {
 
-    private static final String CALL_STATE_NOTE = "The additional first parameter takes a memory segment to capture " +
+    private static final String CALL_STATE_NOTE_1 = "The additional first parameter takes a segment allocator to " +
+            "allocate struct return values.";
+    private static final String CALL_STATE_NOTE_2 = "The additional %s parameter takes a memory segment to capture " +
             "the call state (replacement for {@code GetLastError()}).";
 
     private final CommentWriter commentWriter = new CommentWriter();
@@ -150,10 +152,15 @@ class FunctionCodeWriter extends FunctionCodeWriterBase<Type> {
 
     private void writeFunctionDescriptorAndHandle(Method method) {
         var methodName = method.name();
+        var supportsAllocator = method.supportsAllocator();
+        var supportsLastError = method.supportsLastError();
+
+        var callStateNote1 = supportsAllocator ? CALL_STATE_NOTE_1 : null;
+        var callStateNote2 = supportsLastError ? String.format(CALL_STATE_NOTE_2, supportsAllocator ? "second" : "first") : null;
 
         // descriptor accessor
         writeCommentWithNotes(String.format("Gets the function descriptor for {@code %s}", method.nativeName()),
-                method.supportsLastError() ? CALL_STATE_NOTE : null);
+                callStateNote1, callStateNote2);
         writer.printf("""
                     public static FunctionDescriptor %1$s$descriptor() {
                         return %1$s$IMPL.DESC;

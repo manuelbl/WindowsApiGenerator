@@ -102,12 +102,20 @@ class CommentWriter {
                      * </p>
                 """);
 
-        if (function.supportsLastError())
+        var supportsAllocator = function.supportsAllocator();
+        var supportsLastError = function.supportsLastError();
+        if (supportsAllocator)
             writer.print("""
                          * <p>
-                         * The additional first parameter takes a memory segment to capture the call state (replacement for {@code GetLastError()}).
+                         * The additional first parameter takes a segment allocator to allocate struct return values.
                          * </p>
                     """);
+        if (supportsLastError)
+            writer.printf("""
+                         * <p>
+                         * The additional %s parameter takes a memory segment to capture the call state (replacement for {@code GetLastError()}).
+                         * </p>
+                    """, supportsAllocator ? "second" : "first");
 
         writeDocumentationUrl(writer, function);
 

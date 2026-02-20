@@ -453,7 +453,9 @@ public class MetadataBuilder implements TypeLookup {
         var methodDef = metadataFile.getMethodDef(method.methodDefIndex());
         var methodSignature =
                 signatureDecoder.decodeMethodDefSignature(metadataFile.getBlob(methodDef.signature()));
-        method.setReturnType(methodSignature.returnType());
+        var returnType = methodSignature.returnType();
+        method.setReturnType(returnType);
+        method.setSupportsAllocator(returnType instanceof Struct);
 
         var parameters = new Parameter[methodSignature.paramTypes().length];
         int index = 0;

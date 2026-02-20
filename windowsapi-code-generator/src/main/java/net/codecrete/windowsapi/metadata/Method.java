@@ -26,6 +26,7 @@ public class Method {
     private Type returnType;
     private Parameter[] parameters;
     private String dll;
+    private boolean supportsAllocator;
     private boolean supportsLastError;
     private Object constantValue;
     private LazyString documentationUrl;
@@ -206,6 +207,24 @@ public class Method {
     public boolean hasReturnType() {
         assert returnType != null;
         return !(returnType instanceof Primitive primitive && primitive.kind() == PrimitiveKind.VOID);
+    }
+
+    /**
+     * Indicates if this method uses a {@code SegmentAllocator} to allocate struct return values.
+     *
+     * @return {@code true} if {@code SegmentAllocator} is supported
+     */
+    public boolean supportsAllocator() {
+        return supportsAllocator;
+    }
+
+    /**
+     * Sets if this method uses a {@code SegmentAllocator} to allocate struct return values.
+     *
+     * @param supportsAllocator {@code true} if {@code SegmentAllocator} is supported, {@code false} otherwise
+     */
+    public void setSupportsAllocator(boolean supportsAllocator) {
+        this.supportsAllocator = supportsAllocator;
     }
 
     /**
