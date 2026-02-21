@@ -43,7 +43,7 @@ class CodeWriterTest {
                 .map(Map.Entry::getKey).toList();
         assertThat(duplicateFiles).isEmpty();
         // The following number must not change unless the metadata has been updated
-        assertThat(eventListener.filePaths).hasSize(31992);
+        assertThat(eventListener.filePaths).hasSize(31985);
     }
 
     @Test

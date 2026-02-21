@@ -52,6 +52,8 @@ class CustomAttributeDecoder extends Decoder {
     private static final QualifiedName NATIVE_ENCODING_ATTRIBUTE = new QualifiedName(METADATA,
             "NativeEncodingAttribute");
     private static final QualifiedName NATIVE_TYPEDEF_ATTRIBUTE = new QualifiedName(METADATA, "NativeTypedefAttribute");
+    private static final QualifiedName METADATA_TYPEDEF_ATTRIBUTE = new QualifiedName(METADATA,
+            "MetadataTypedefAttribute");
     private static final QualifiedName STRUCT_SIZE_FIELD_ATTRIBUTE = new QualifiedName(METADATA,
             "StructSizeFieldAttribute");
     private static final QualifiedName SUPPORTED_ARCHITECTURE_ATTRIBUTE = new QualifiedName(METADATA,
@@ -72,6 +74,8 @@ class CustomAttributeDecoder extends Decoder {
             (context, data) -> data.guidConstant = createGuidConstant(context.getValue()),
             NATIVE_TYPEDEF_ATTRIBUTE,
             (context, data) -> data.isTypedef = true,
+            METADATA_TYPEDEF_ATTRIBUTE,
+            (context, data) -> data.isTypedef = true,
             STRUCT_SIZE_FIELD_ATTRIBUTE,
             (context, data) -> data.structSizeField = (String) context.getValue().fixedArguments()[0].value()
     );
@@ -89,7 +93,6 @@ class CustomAttributeDecoder extends Decoder {
             new QualifiedName(METADATA, "AnsiAttribute"),
             new QualifiedName(METADATA, "AssociatedConstantAttribute"),
             new QualifiedName(METADATA, "InvalidHandleValueAttribute"),
-            new QualifiedName(METADATA, "MetadataTypedefAttribute"),
             new QualifiedName(METADATA, "RAIIFreeAttribute"),
             new QualifiedName(METADATA, "ScopedEnumAttribute"),
             new QualifiedName(METADATA, "SupportedOSPlatformAttribute"),
