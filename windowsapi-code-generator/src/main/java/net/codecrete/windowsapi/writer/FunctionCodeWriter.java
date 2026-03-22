@@ -89,6 +89,18 @@ class FunctionCodeWriter extends FunctionCodeWriterBase<Type> {
 
         writer.println();
 
+        writer.print("""
+                private static final boolean TRACE_DOWNCALLS = Boolean.getBoolean("windowsapi.trace.downcalls");
+
+                private static void traceDowncall(String name, Object... args) {
+                    var traceArgs = java.util.Arrays.stream(args)
+                            .map(Object::toString)
+                            .collect(java.util.stream.Collectors.joining(", "));
+                    System.out.printf("%s(%s)%n", name, traceArgs);
+                }
+
+            """);
+
         for (var method : functions)
             writeFunction(method);
 

@@ -111,8 +111,28 @@ class FunctionCodeWriterBase<T extends Type> extends JavaCodeWriter<T> {
 
         writer.printf("""
                 %1$stry {
+                %1$s    if (TRACE_DOWNCALLS) {
+                %1$s        traceDowncall(\"%2$s\"""", indent, function.name());
+        writer.print(function.parameters().length > 0 || function.supportsLastError() ? ", " : "");
+
+        writeFunctionParameterList(function);
+        writer.println(");");
+
+        writer.printf("""
+                %1$s    }
                 %1$s    %2$s%3$s""", indent, returnWithCast, invoke);
 
+        writeFunctionParameterList(function);
+        writer.println(");");
+
+        writer.printf("""
+                %1$s} catch (Throwable ex) {
+                %1$s    throw new RuntimeException(ex);
+                %1$s}
+                """, indent);
+    }
+
+    private void writeFunctionParameterList(Method function) {
         var supportsLastError = function.supportsLastError();
         if (supportsLastError)
             writer.print("lastErrorState");
@@ -122,12 +142,5 @@ class FunctionCodeWriterBase<T extends Type> extends JavaCodeWriter<T> {
             writer.print(i > 0 || supportsLastError ? ", " : "");
             writer.print(getJavaSafeName(parameters[i].name()));
         }
-        writer.println(");");
-
-        writer.printf("""
-                %1$s} catch (Throwable ex) {
-                %1$s    throw new RuntimeException(ex);
-                %1$s}
-                """, indent);
     }
 }
