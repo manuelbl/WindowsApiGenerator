@@ -10,7 +10,7 @@
     ```
 - Run the unit tests
     ```bash
-    cd windows-api
+    cd windowsapi-code-generator
     mvn clean install
     ```
 - Change the unit tests if necessary (e.g. total number of generated files)
