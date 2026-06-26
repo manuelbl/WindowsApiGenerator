@@ -8,7 +8,7 @@ In your `build.gradle` file, declare the Windows API plugin in the `plugins` sec
 
 ```groovy
 plugins {
-    id 'net.codecrete.windows-api' version '0.8.5'
+    id 'net.codecrete.windows-api' version '0.8.6'
 }
 ```
 

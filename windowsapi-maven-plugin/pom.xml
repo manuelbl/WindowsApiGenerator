@@ -5,7 +5,7 @@
 
   <groupId>net.codecrete.windows-api</groupId>
   <artifactId>windowsapi-maven-plugin</artifactId>
-  <version>0.8.5</version>
+  <version>0.8.6</version>
 
   <properties>
     <maven.compiler.release>21</maven.compiler.release>
@@ -13,7 +13,7 @@
     <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-    <code-generator.version>0.8.5</code-generator.version>
+    <code-generator.version>0.8.6</code-generator.version>
 
     <assertj.version>3.27.3</assertj.version>
     <junit.version>5.12.0</junit.version>

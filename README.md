@@ -11,12 +11,13 @@ and use COM objects. The generator is available as a Maven and a Gradle plugin.
 ## Features
 
 - Generates code for Windows API functions, data structures (`struct` and `union`), callback functions, enumerations, constants and COM interfaces
-- COM interfaces can be called from Java or implemented in Java
+- COM interfaces can be called from Java/Kotlin or implemented in Java/Kotlin
 - Generates code for constants of different types: integer, string, GUID, property keys, etc.
-- Automatically adds the related data structures, enumerations, etc. to the initially requested scope
+- Automatically adds the related data structures, enumerations, etc. to the requested scope
 - Generated code includes extensive JavaDoc documentation including links to the official Microsoft documentation
 - Supports capturing call state, structs of variable length, `cbSize` etc.
 - Generates separate code for Windows x64 and ARM64 where necessary
+- Generates metadata for GraalVM
 - Available for both Maven and Gradle
 - Plugins run on any platform (not just Windows)
 - Based on Windows API metadata curated by Microsoft
@@ -37,13 +38,14 @@ and use COM objects. The generator is available as a Maven and a Gradle plugin.
 - Display User Notification, showing use of COM interfaces (Java, Maven): [user_notification_java](examples/user_notification_java)
 - Display User Notification, showing use of COM interfaces (Kotlin, Maven): [user_notification_kotlin](examples/user_notification_kotlin)
 - Show Progress in Taskbar, demonstrating use of COM interfaces (Java, Maven): [taskbar](examples/taskbar)
+- Native application using GraalVM: [native](examples/native])
 
 
 ## Prerequisites
 
 - Maven Plugin: Java 21 or higher, Maven 3.8.5 or higher, any platform
 - Gradle Plugin: Java 21 or higher, any platform
-- Generated code: Java 23 or higher, 64-bit Windows (x64 or ARM64)
+- Generated code: Java 25 or higher, 64-bit Windows (x64 or ARM64)
 
 
 ## Further Documentation
@@ -52,6 +54,7 @@ and use COM objects. The generator is available as a Maven and a Gradle plugin.
 - [Gradle Plugin](docs/gradle_plugin.md)
 - [Generated Code](docs/generated_code.md)
 - [Working with COM Interfaces](docs/com_interfaces.md)
+- [Native Images with GraalVM](docs/native_images.md)
 
 
 ## Windows API Metadata
@@ -85,5 +88,6 @@ Java bindings. This is a comparison of the two tools:
 | Determines dependencies and automatically generates all necessary code                          | Requires multiple iterations to manually specify all dependencies                            |
 | Constants of different types: integer, string, GUID, property keys, etc.                        | Integer constants only                                                                       |
 | Support for capturing call state (`GetLastError`)                                               | No support for capturing call state                                                          |
+| Generates GraalVM metadata.                                                                     | No support for GraalVM metadata                                                              |
 | Available as Maven and Gradle plugin                                                            | Available as a separate tool                                                                 |
 

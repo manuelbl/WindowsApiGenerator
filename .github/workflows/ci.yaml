@@ -53,7 +53,7 @@ jobs:
         echo "JAVA_HOME=$JAVA_HOME_25_X64" >> "$GITHUB_ENV"
         echo "$JAVA_HOME_25_X64/bin" >> "$GITHUB_PATH"
     - name: Generate full Windows API
-      run: java --class-path windowsapi-code-generator/target/test-classes:windowsapi-code-generator/target/code-generator-0.8.5.jar net.codecrete.windowsapi.special.FullBuild integration-tests/full-build/src/main/java
+      run: java --class-path windowsapi-code-generator/target/test-classes:windowsapi-code-generator/target/code-generator-0.8.6.jar net.codecrete.windowsapi.special.FullBuild integration-tests/full-build/src/main/java
     - name: Build full Windows API
       run: mvn package
       working-directory: ./integration-tests/full-build
