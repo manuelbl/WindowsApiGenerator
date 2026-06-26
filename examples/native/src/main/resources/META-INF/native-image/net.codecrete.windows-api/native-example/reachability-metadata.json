@@ -42,8 +42,28 @@
                 "returnType": "jint",
                 "parameterTypes": [
                     "void*",
+                    "jlong"
+                ],
+                "options": {
+                    "captureCallState": true
+                }
+            },
+            {
+                "returnType": "jint",
+                "parameterTypes": [
+                    "void*",
                     "void*"
                 ]
+            },
+            {
+                "returnType": "jint",
+                "parameterTypes": [
+                    "void*",
+                    "void*"
+                ],
+                "options": {
+                    "captureCallState": true
+                }
             },
             {
                 "returnType": "jint",
@@ -184,6 +204,29 @@
                     "captureCallState": true
                 }
             }
+        ],
+        "upcalls": [
+            {
+                "returnType": "jint",
+                "parameterTypes": [
+                    "void*",
+                    "jlong"
+                ]
+            }
         ]
-    }
+    },
+    "reflection": [
+        {
+            "type": "windows.win32.ui.windowsandmessaging.WNDENUMPROC$Function",
+            "methods": [
+                {
+                    "name": "invoke",
+                    "parameterTypes": [
+                        "java.lang.foreign.MemorySegment",
+                        "long"
+                    ]
+                }
+            ]
+        }
+    ]
 }

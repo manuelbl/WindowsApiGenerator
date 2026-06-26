@@ -6,6 +6,7 @@
 //
 package net.codecrete.windowsapi.examples.graalvm;
 
+import windows.win32.foundation.RECT;
 import windows.win32.system.com.Apis;
 import windows.win32.system.com.CLSCTX;
 import windows.win32.system.com.COINIT;
@@ -13,9 +14,14 @@ import windows.win32.ui.shell.ITaskbarList3;
 import windows.win32.ui.shell.TBPFLAG;
 import windows.win32.ui.windowsandmessaging.MESSAGEBOX_RESULT;
 import windows.win32.ui.windowsandmessaging.MESSAGEBOX_STYLE;
+import windows.win32.ui.windowsandmessaging.WINDOWINFO;
+import windows.win32.ui.windowsandmessaging.WNDENUMPROC;
 
 import java.io.File;
 import java.lang.foreign.Arena;
+import java.lang.foreign.Linker;
+import java.lang.foreign.MemoryLayout;
+import java.lang.foreign.MemorySegment;
 
 import static java.lang.foreign.Linker.Option.captureStateLayout;
 import static java.lang.foreign.MemorySegment.NULL;
@@ -24,9 +30,9 @@ import static java.lang.foreign.ValueLayout.JAVA_CHAR;
 import static java.lang.foreign.ValueLayout.JAVA_INT;
 import static java.lang.foreign.ValueLayout.JAVA_LONG;
 import static java.nio.charset.StandardCharsets.UTF_16LE;
-import static net.codecrete.windowsapi.examples.graalvm.Windows.checkSuccessful;
 import static net.codecrete.windowsapi.examples.graalvm.Windows.getErrorMessage;
 import static net.codecrete.windowsapi.examples.graalvm.Windows.getLastError;
+import static net.codecrete.windowsapi.examples.graalvm.Windows.throwError;
 import static windows.win32.foundation.WIN32_ERROR.ERROR_SUCCESS;
 import static windows.win32.storage.filesystem.Apis.GetVolumePathNameW;
 import static windows.win32.system.com.Apis.CoCreateInstance;
@@ -39,8 +45,12 @@ import static windows.win32.system.registry.REG_SAM_FLAGS.KEY_QUERY_VALUE;
 import static windows.win32.ui.shell.Apis.SHGetKnownFolderPath;
 import static windows.win32.ui.shell.Constants.FOLDERID_CommonPrograms;
 import static windows.win32.ui.shell.Constants.TaskbarList;
+import static windows.win32.ui.windowsandmessaging.Apis.EnumWindows;
 import static windows.win32.ui.windowsandmessaging.Apis.FindWindowW;
+import static windows.win32.ui.windowsandmessaging.Apis.GetWindowInfo;
+import static windows.win32.ui.windowsandmessaging.Apis.GetWindowTextW;
 import static windows.win32.ui.windowsandmessaging.Apis.MessageBoxW;
+import static windows.win32.ui.windowsandmessaging.WINDOW_STYLE.WS_VISIBLE;
 
 /**
  * Run multiple actions using the Windows API
@@ -49,12 +59,59 @@ import static windows.win32.ui.windowsandmessaging.Apis.MessageBoxW;
 public class App {
     private static final String WINDOW_TITLE = "Windows API Generator";
 
+    private static final MemoryLayout errorStateLayout = Linker.Option.captureStateLayout();
+
     static void main() {
+        enumerateWindows();
         getVolumePath();
         getCommonProgramsFolder();
         getWindowsVersion();
         startTaskBarProgress();
         showMessageBox();
+    }
+
+    static void enumerateWindows() {
+        try (var arena = Arena.ofConfined()) {
+            System.out.println("Windows:");
+            var errorState = arena.allocate(errorStateLayout);
+            var enumFuncUpcall = WNDENUMPROC.allocate(arena, App::windowEnumerationFunction);
+            var res = EnumWindows(errorState, enumFuncUpcall, 0);
+            if (res == 0)
+                throwError(errorState);
+        }
+    }
+
+    private static int windowEnumerationFunction(MemorySegment windowHandle, long param) {
+        try (var arena = Arena.ofConfined()) {
+            var errorState = arena.allocate(errorStateLayout);
+
+            var windowInfo = WINDOWINFO.allocate(arena);
+            var res = GetWindowInfo(errorState, windowHandle, windowInfo);
+            if (res == 0)
+                throwError(errorState);
+
+            var dwStyle = WINDOWINFO.dwStyle(windowInfo);
+            if ((dwStyle & WS_VISIBLE) == 0)
+                return 1; // window is not visible
+
+            var titleBarTextBuffer = arena.allocate(JAVA_CHAR, 300);
+            res = GetWindowTextW(errorState, windowHandle, titleBarTextBuffer, 300);
+            if (res == 0)
+                return 1; // window without title bar and likely size 0
+
+            var titleBarText = titleBarTextBuffer.getString(0, UTF_16LE);
+
+            var size = WINDOWINFO.rcWindow(windowInfo);
+            var left = RECT.left(size);
+            var top = RECT.top(size);
+            var right = RECT.right(size);
+            var bottom = RECT.bottom(size);
+
+            System.out.printf("  \"%s\" at (%d, %d), size %d x %d%n",
+                    titleBarText, left, top, right - left, bottom - top);
+        }
+
+        return 1;
     }
 
     static void getVolumePath() {
@@ -140,32 +197,37 @@ public class App {
                 var errorState = arena.allocate(captureStateLayout());
                 var hwnd = FindWindowW(errorState, NULL, arena.allocateFrom(WINDOW_TITLE, UTF_16LE));
                 if (hwnd.address() == 0L)
-                    checkSuccessful(errorState);
+                    throwError(errorState);
 
                 // initialize COM (as this is a new thread)
                 var hr = CoInitializeEx(NULL, COINIT.MULTITHREADED);
-                checkSuccessful(hr);
+                if (hr != 0)
+                    throwError(hr);
 
                 // create instance of ITaskbarList, requesting interface ITaskbarList3
                 var taskbarListOut = arena.allocate(ADDRESS);
                 hr = CoCreateInstance(TaskbarList(), NULL, CLSCTX.ALL, ITaskbarList3.iid(), taskbarListOut);
-                checkSuccessful(hr);
+                if (hr != 0)
+                    throwError(hr);
 
                 // Wrap instance in easy-to-use Java object
                 taskbarList = ITaskbarList3.wrap(taskbarListOut.get(ADDRESS, 0));
 
                 // Initializes the taskbar list object. This method must be called before any other ITaskbarList methods can be called.
                 hr = taskbarList.HrInit();
-                checkSuccessful(hr);
+                if (hr != 0)
+                    throwError(hr);
 
                 // Enable display of progress
                 hr = taskbarList.SetProgressState(hwnd, TBPFLAG.TBPF_NORMAL);
-                checkSuccessful(hr);
+                if (hr != 0)
+                    throwError(hr);
 
-                for (int i = 0; i < 100; i += 10) {
+                for (int i = 0; i < 100; i += 5) {
                     // Set progress value
                     hr = taskbarList.SetProgressValue(hwnd, i, 100);
-                    checkSuccessful(hr);
+                    if (hr != 0)
+                        throwError(hr);
 
                     // Sleep
                     sleep(200);
@@ -173,7 +235,8 @@ public class App {
 
                 // Disable display of progress
                 hr = taskbarList.SetProgressState(hwnd, TBPFLAG.TBPF_NOPROGRESS);
-                checkSuccessful(hr);
+                if (hr != 0)
+                    throwError(hr);
             }
         } finally {
             if (taskbarList != null)

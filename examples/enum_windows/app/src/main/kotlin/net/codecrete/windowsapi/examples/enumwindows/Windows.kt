@@ -7,7 +7,6 @@
 package net.codecrete.windowsapi.examples.enumwindows
 
 import windows.win32.foundation.Apis.LocalFree
-import windows.win32.foundation.WIN32_ERROR
 import windows.win32.system.diagnostics.debug.Apis.FormatMessageW
 import windows.win32.system.diagnostics.debug.FORMAT_MESSAGE_OPTIONS
 import windows.win32.system.libraryloader.Apis.GetModuleHandleW
@@ -26,7 +25,7 @@ object Windows {
     // address layout pointing to an unbounded memory segment
     private val ADDRESS_UNBOUNDED: AddressLayout? = ADDRESS.withTargetLayout(
         MemoryLayout.sequenceLayout(
-            Long.Companion.MAX_VALUE,
+            Long.MAX_VALUE,
             JAVA_BYTE
         )
     )
@@ -56,13 +55,13 @@ object Windows {
     }
 
     /**
-     * Checks that the previous Windows API call was successful.
+     * Throws an exception with the message for the given error state.
      *
      * Throws an exception with the error message otherwise.
      */
-    fun checkSuccessful(errorState: MemorySegment) {
+    fun throwError(errorState: MemorySegment) {
         val lastError = getLastError(errorState)
-        check(lastError == WIN32_ERROR.ERROR_SUCCESS) { getErrorMessage(lastError) }
+        throw IllegalStateException(getErrorMessage(lastError))
     }
 
     /**

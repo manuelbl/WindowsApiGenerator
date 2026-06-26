@@ -3,15 +3,15 @@
 This example project demonstrates how to build a native application with GraalVM
 calling Windows API functions.
 
-All downcalls and upcalls must be declared in a file called `reachabilit-metadata.json`.
-The Windows API generator generates the file. See
+All downcalls and upcalls must be declared in a file called `reachability-metadata.json`.
+The Windows API generator plug-in generates the file. See
 `<reachabilityMetadataFile>...</reachabilityMetadataFile>` in `pom.xml`.
 
 ## Build and Run
 
 ### Prerequisites
 
-- [GraalVM](https://www.graalvm.org/) 25 or higher
+- [GraalVM](https://www.graalvm.org/) 25.0.3 or higher
 - [Maven](https://maven.apache.org/) 3.9 or higher
 
 Ensure that the environment variable `JAVA_HOME` points to the GraalVM directory.

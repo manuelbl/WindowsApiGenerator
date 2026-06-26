@@ -51,6 +51,9 @@
                             <goal>windows-api</goal>
                         </goals>
                         <configuration>
+                            <callbackFunctions>
+                                <callbackFunction>WNDENUMPROC</callbackFunction>
+                            </callbackFunctions>
                             <comInterfaces>
                                 <comInterface>ITaskbarList3</comInterface>
                             </comInterfaces>
@@ -58,10 +61,13 @@
                                 <function>CoCreateInstance</function>
                                 <function>CoInitializeEx</function>
                                 <function>CoTaskMemFree</function>
+                                <function>EnumWindows</function>
                                 <function>FindWindowW</function>
                                 <function>FormatMessageW</function>
                                 <function>GetModuleHandleW</function>
                                 <function>GetVolumePathNameW</function>
+                                <function>GetWindowInfo</function>
+                                <function>GetWindowTextW</function>
                                 <function>LocalFree</function>
                                 <function>MessageBoxW</function>
                                 <function>RegCloseKey</function>

@@ -6,8 +6,6 @@
 //
 package net.codecrete.windowsapi.examples.graalvm;
 
-import windows.win32.foundation.WIN32_ERROR;
-
 import java.lang.foreign.AddressLayout;
 import java.lang.foreign.Arena;
 import java.lang.foreign.Linker;
@@ -57,26 +55,20 @@ public class Windows {
     }
 
     /**
-     * Checks that the previous Windows API call was successful.
-     * <p>
-     * Throws an exception with the error message otherwise.
-     * </p>
+     * Throws an exception with the error message for the given error state.
+     * @param errorState the error state
      */
-    public static void checkSuccessful(MemorySegment errorState) {
+    public static void throwError(MemorySegment errorState) {
         var lastError = getLastError(errorState);
-        if (lastError != WIN32_ERROR.ERROR_SUCCESS)
-            throw new IllegalStateException(getErrorMessage(lastError));
+        throw new IllegalStateException(getErrorMessage(lastError));
     }
 
     /**
-     * Checks that {@code errorCode} is a successful code.
-     * <p>
-     * Throws an exception with the error message otherwise.
-     * </p>
+     * Throws an exception with the error message for the given error code.
+     * @param errorCode the error code
      */
-    public static void checkSuccessful(int errorCode) {
-        if (errorCode < 0)
-            throw new IllegalStateException(getErrorMessage(errorCode));
+    public static void throwError(int errorCode) {
+        throw new IllegalStateException(getErrorMessage(errorCode));
     }
 
     /**
