@@ -6,8 +6,7 @@
 //
 package net.codecrete.windowsapi.examples
 
-import net.codecrete.windowsapi.examples.Windows.checkSuccessful
-import windows.win32.foundation.WIN32_ERROR
+import net.codecrete.windowsapi.examples.Windows.checkHResult
 import windows.win32.system.com.Apis.CoCreateInstance
 import windows.win32.system.com.Apis.CoInitializeEx
 import windows.win32.system.com.CLSCTX
@@ -25,23 +24,20 @@ import kotlin.text.Charsets.UTF_16LE
 
 fun main() {
     // Initialize COM with apartment-threaded object concurrency
-    var result = CoInitializeEx(NULL, COINIT.APARTMENTTHREADED)
-    check(result == WIN32_ERROR.ERROR_SUCCESS) { Windows.getErrorMessage(result) }
+    checkHResult(CoInitializeEx(NULL, COINIT.APARTMENTTHREADED))
 
     Arena.ofConfined().use { arena ->
         // Create a user notification instance (implemented by Windows)
         val holder = arena.allocate(ADDRESS)
-        result = CoCreateInstance(UserNotification(), NULL, CLSCTX.ALL, IUserNotification2.iid(), holder)
-        checkSuccessful(result)
+        checkHResult(CoCreateInstance(UserNotification(), NULL, CLSCTX.ALL, IUserNotification2.iid(), holder))
 
         // Wrap the COM instance in an easy-to-use Java/Kotlin object
         val notification = IUserNotification2.wrap(holder.get(ADDRESS, 0))
 
         // Configure a balloon info
         val title = arena.allocateFrom("Windows API", UTF_16LE)
-        val text = arena.allocateFrom("Hello from Java", UTF_16LE)
-        result = notification.SetBalloonInfo(title, text, NIIF_INFO and NIIF_RESPECT_QUIET_TIME)
-        checkSuccessful(result)
+        val text = arena.allocateFrom("Hello from Kotlin", UTF_16LE)
+        checkHResult(notification.SetBalloonInfo(title, text, NIIF_INFO and NIIF_RESPECT_QUIET_TIME))
 
         // Create an IQueryContinue instance (implemented in Kotlin)
         val queryContinue = QueryContinue()
@@ -54,8 +50,7 @@ fun main() {
         callback.thisPointer = callbackSegment
 
         // Show the notification
-        result = notification.Show(queryContinueSegment, 5000, callbackSegment)
-        checkSuccessful(result)
+        checkHResult(notification.Show(queryContinueSegment, 5000, callbackSegment))
 
         notification.Release()
     }

@@ -18,6 +18,7 @@ import static java.lang.foreign.ValueLayout.JAVA_BYTE;
 import static java.lang.foreign.ValueLayout.JAVA_CHAR;
 import static java.nio.charset.StandardCharsets.UTF_16LE;
 import static windows.win32.foundation.Apis.LocalFree;
+import static windows.win32.foundation.WIN32_ERROR.ERROR_SUCCESS;
 import static windows.win32.system.diagnostics.debug.Apis.FormatMessageW;
 import static windows.win32.system.diagnostics.debug.FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_ALLOCATE_BUFFER;
 import static windows.win32.system.diagnostics.debug.FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_FROM_HMODULE;
@@ -31,6 +32,11 @@ public class Windows {
 
     private static final AddressLayout ADDRESS_UNBOUNDED
             = ADDRESS.withTargetLayout(sequenceLayout(Long.MAX_VALUE, JAVA_BYTE));
+
+    public static void checkErrorCode(int errorCode) {
+        if (errorCode != ERROR_SUCCESS)
+            throw new IllegalStateException(getErrorMessage(errorCode));
+    }
 
     public static String getErrorMessage(int errorCode) {
         try (var arena = Arena.ofConfined()) {

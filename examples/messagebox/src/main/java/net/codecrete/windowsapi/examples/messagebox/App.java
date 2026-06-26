@@ -21,7 +21,7 @@ import static windows.win32.ui.windowsandmessaging.Apis.MessageBoxW;
  */
 public class App
 {
-    public static void main( String[] args )
+    static void main()
     {
         var errorStateLayout = Linker.Option.captureStateLayout();
 

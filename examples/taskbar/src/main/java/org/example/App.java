@@ -14,7 +14,7 @@ import static java.lang.foreign.Linker.Option.captureStateLayout;
 import static java.lang.foreign.MemorySegment.NULL;
 import static java.lang.foreign.ValueLayout.ADDRESS;
 import static java.nio.charset.StandardCharsets.UTF_16LE;
-import static org.example.Windows.checkSuccessful;
+import static org.example.Windows.checkHResult;
 import static windows.win32.system.com.Apis.CoCreateInstance;
 import static windows.win32.system.com.Apis.CoInitializeEx;
 import static windows.win32.ui.shell.Constants.TaskbarList;
@@ -23,7 +23,7 @@ import static windows.win32.ui.windowsandmessaging.Apis.FindWindowW;
 public class App {
     private static final String WINDOW_TITLE = "Windows API Generator";
 
-    public static void main(String[] args) throws Exception {
+    static void main() throws Exception {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         SwingUtilities.invokeLater(App::createAndShowWindow);
     }
@@ -62,40 +62,34 @@ public class App {
                 var errorState = arena.allocate(captureStateLayout());
                 var hwnd = FindWindowW(errorState, NULL, arena.allocateFrom(WINDOW_TITLE, UTF_16LE));
                 if (hwnd.address() == 0L)
-                    checkSuccessful(errorState);
+                    throw new IllegalStateException("Window titled " + WINDOW_TITLE + " not found.");
 
                 // initialize COM (as this is a new thread)
-                var hr = CoInitializeEx(NULL, COINIT.MULTITHREADED);
-                checkSuccessful(hr);
+                checkHResult(CoInitializeEx(NULL, COINIT.MULTITHREADED));
 
                 // create instance of ITaskbarList, requesting interface ITaskbarList3
                 var taskbarListOut = arena.allocate(ADDRESS);
-                hr = CoCreateInstance(TaskbarList(), NULL, CLSCTX.ALL, ITaskbarList3.iid(), taskbarListOut);
-                checkSuccessful(hr);
+                checkHResult(CoCreateInstance(TaskbarList(), NULL, CLSCTX.ALL, ITaskbarList3.iid(), taskbarListOut));
 
                 // Wrap instance in easy-to-use Java object
                 taskbarList = ITaskbarList3.wrap(taskbarListOut.get(ADDRESS, 0));
 
                 // Initializes the taskbar list object. This method must be called before any other ITaskbarList methods can be called.
-                hr = taskbarList.HrInit();
-                checkSuccessful(hr);
+                checkHResult(taskbarList.HrInit());
 
                 // Enable display of progress
-                hr = taskbarList.SetProgressState(hwnd, TBPFLAG.TBPF_NORMAL);
-                checkSuccessful(hr);
+                checkHResult(taskbarList.SetProgressState(hwnd, TBPFLAG.TBPF_NORMAL));
 
                 for (int i = 0; i < 100; i += 10) {
                     // Set progress value
-                    hr = taskbarList.SetProgressValue(hwnd, i, 100);
-                    checkSuccessful(hr);
+                    checkHResult(taskbarList.SetProgressValue(hwnd, i, 100));
 
                     // Sleep
                     sleep(200);
                 }
 
                 // Disable display of progress
-                hr = taskbarList.SetProgressState(hwnd, TBPFLAG.TBPF_NOPROGRESS);
-                checkSuccessful(hr);
+                checkHResult(taskbarList.SetProgressState(hwnd, TBPFLAG.TBPF_NOPROGRESS));
             }
         } catch (Exception e) {
             e.printStackTrace();

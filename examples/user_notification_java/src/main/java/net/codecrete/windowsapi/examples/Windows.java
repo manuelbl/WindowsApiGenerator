@@ -6,14 +6,11 @@
 //
 package net.codecrete.windowsapi.examples;
 
-import windows.win32.foundation.WIN32_ERROR;
-
 import java.lang.foreign.AddressLayout;
 import java.lang.foreign.Arena;
 import java.lang.foreign.Linker;
 import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.MemorySegment;
-import java.lang.invoke.VarHandle;
 
 import static java.lang.foreign.MemorySegment.NULL;
 import static java.lang.foreign.ValueLayout.ADDRESS;
@@ -33,8 +30,6 @@ public class Windows {
             MemoryLayout.sequenceLayout(Long.MAX_VALUE, JAVA_BYTE));
 
     private static final MemoryLayout errorStateLayout = Linker.Option.captureStateLayout();
-    private static final VarHandle callStateGetLastErrorVarHandle =
-            errorStateLayout.varHandle(MemoryLayout.PathElement.groupElement("GetLastError"));
 
     private static final MemorySegment ntModuleHandle;
 
@@ -45,37 +40,10 @@ public class Windows {
         ntModuleHandle = GetModuleHandleW(errorState, ntModuleName);
     }
 
-    /**
-     * Returns the error code captured using the call state.
-     *
-     * @param callState the call state
-     * @return the error code
-     */
-    public static int getLastError(MemorySegment callState) {
-        return (int) callStateGetLastErrorVarHandle.get(callState, 0);
-    }
-
-    /**
-     * Checks that the previous Windows API call was successful.
-     * <p>
-     * Throws an exception with the error message otherwise.
-     * </p>
-     */
-    public static void checkSuccessful(MemorySegment errorState) {
-        var lastError = getLastError(errorState);
-        if (lastError != WIN32_ERROR.ERROR_SUCCESS)
-            throw new IllegalStateException(getErrorMessage(lastError));
-    }
-
-    /**
-     * Checks that {@code errorCode} is a successful code.
-     * <p>
-     * Throws an exception with the error message otherwise.
-     * </p>
-     */
-    public static void checkSuccessful(int errorCode) {
-        if (errorCode < 0)
-            throw new IllegalStateException(getErrorMessage(errorCode));
+    public static int checkHResult(int hresult) {
+        if (hresult < 0)
+            throw new IllegalStateException(getErrorMessage(hresult));
+        return hresult;
     }
 
     /**

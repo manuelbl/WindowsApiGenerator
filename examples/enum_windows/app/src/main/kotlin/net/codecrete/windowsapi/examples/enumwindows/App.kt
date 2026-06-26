@@ -6,7 +6,7 @@
 //
 package net.codecrete.windowsapi.examples.enumwindows
 
-import net.codecrete.windowsapi.examples.enumwindows.Windows.throwError
+import net.codecrete.windowsapi.examples.enumwindows.Windows.checkResult
 import windows.win32.foundation.RECT
 import windows.win32.ui.windowsandmessaging.Apis.EnumWindows
 import windows.win32.ui.windowsandmessaging.Apis.GetWindowInfo
@@ -30,9 +30,7 @@ fun main() {
     Arena.ofConfined().use { arena ->
         val errorState = arena.allocate(errorStateLayout)
         val enumFuncUpcall = WNDENUMPROC.allocate(arena) { windowHandle, _ -> windowEnumerationFunction(windowHandle) }
-        val res = EnumWindows(errorState, enumFuncUpcall, 0)
-        if (res == 0)
-            throwError(errorState)
+        checkResult(EnumWindows(errorState, enumFuncUpcall, 0), errorState)
     }
 }
 
@@ -44,18 +42,16 @@ fun windowEnumerationFunction(windowHandle: MemorySegment): Int {
         val errorState = arena.allocate(errorStateLayout)
 
         val windowInfo = WINDOWINFO.allocate(arena)
-        var res = GetWindowInfo(errorState, windowHandle, windowInfo)
-        if (res == 0)
-            throwError(errorState)
+        checkResult(GetWindowInfo(errorState, windowHandle, windowInfo), errorState)
 
         val dwStyle = WINDOWINFO.dwStyle(windowInfo)
         if ((dwStyle and WS_VISIBLE) == 0)
             return@use // window is not visible
 
         val titleBarTextBuffer = arena.allocate(JAVA_CHAR, 300)
-        res = GetWindowTextW(errorState, windowHandle, titleBarTextBuffer, 300)
+        val res = GetWindowTextW(errorState, windowHandle, titleBarTextBuffer, 300)
         if (res == 0)
-            return@use // window has no title bar text
+            return@use // window has no title bar text and likely a size of 0
 
         val titleBarText = titleBarTextBuffer.getString(0, UTF_16LE)
 

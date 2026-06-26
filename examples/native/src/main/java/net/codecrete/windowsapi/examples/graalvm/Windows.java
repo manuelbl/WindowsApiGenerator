@@ -19,6 +19,7 @@ import static java.lang.foreign.ValueLayout.JAVA_BYTE;
 import static java.lang.foreign.ValueLayout.JAVA_CHAR;
 import static java.nio.charset.StandardCharsets.UTF_16LE;
 import static windows.win32.foundation.Apis.LocalFree;
+import static windows.win32.foundation.WIN32_ERROR.ERROR_SUCCESS;
 import static windows.win32.system.diagnostics.debug.Apis.FormatMessageW;
 import static windows.win32.system.diagnostics.debug.FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_ALLOCATE_BUFFER;
 import static windows.win32.system.diagnostics.debug.FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_FROM_HMODULE;
@@ -52,6 +53,44 @@ public class Windows {
      */
     public static int getLastError(MemorySegment callState) {
         return (int) callStateGetLastErrorVarHandle.get(callState, 0);
+    }
+
+    /**
+     * Checks the result.
+     * <p>
+     * If the result is 0, an exception with the message for the last error is thrown.
+     * </p>
+     * @param result the result to check
+     * @param errorState the error state.
+     */
+    public static int checkResult(int result, MemorySegment errorState) {
+        if (result == 0)
+            throwError(errorState);
+        return result;
+    }
+
+    /**
+     * Checks the HRESULT code.
+     * <p>
+     * If the code indicates an error, an exception with the message for the result code is raised.
+     * </p>
+     * @param hresult the HRESULT code to check
+     */
+    public static void checkHResult(int hresult) {
+        if (hresult < 0)
+            throwError(hresult);
+    }
+
+    /**
+     * Checks the error code.
+     * <p>
+     * If the code is different from ERROR_SUCCESS, an exception with the message for the result code.
+     * </p>
+     * @param errorCode the error code to check
+     */
+    public static void checkErrorCode(int errorCode) {
+        if (errorCode != ERROR_SUCCESS)
+            throwError(errorCode);
     }
 
     /**

@@ -40,6 +40,7 @@
                 <function>LocalFree</function>
               </functions>
               <constants>
+                <constant>S_OK</constant>
                 <constant>TaskbarList</constant>
               </constants>
               <downcallTracing>false</downcallTracing>

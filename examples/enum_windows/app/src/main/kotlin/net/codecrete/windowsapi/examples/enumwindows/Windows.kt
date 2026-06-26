@@ -55,6 +55,20 @@ object Windows {
     }
 
     /**
+     * Checks the result.
+     *
+     * If the result is 0, an exception is thrown with the message for the last error.
+     *
+     * @param result the result code
+     * @param errorState the error state (last error)
+     */
+    fun checkResult(result: Int, errorState: MemorySegment): Int {
+        if (result == 0)
+            throwError(errorState)
+        return result
+    }
+
+    /**
      * Throws an exception with the message for the given error state.
      *
      * Throws an exception with the error message otherwise.

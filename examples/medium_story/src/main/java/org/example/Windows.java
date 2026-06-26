@@ -20,6 +20,7 @@ import static java.lang.foreign.ValueLayout.ADDRESS;
 import static java.lang.foreign.ValueLayout.JAVA_BYTE;
 import static java.nio.charset.StandardCharsets.UTF_16LE;
 import static windows.win32.foundation.Apis.LocalFree;
+import static windows.win32.foundation.Constants.S_OK;
 import static windows.win32.system.diagnostics.debug.Apis.FormatMessageW;
 import static windows.win32.system.diagnostics.debug.FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_ALLOCATE_BUFFER;
 import static windows.win32.system.diagnostics.debug.FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_FROM_HMODULE;
@@ -43,6 +44,26 @@ public class Windows {
         var ntModuleName = arena.allocateFrom("NTDLL.DLL", UTF_16LE);
         var errorState = arena.allocate(errorStateLayout);
         ntModuleHandle = GetModuleHandleW(errorState, ntModuleName);
+    }
+
+    /**
+     * Checks the result.
+     * <p>
+     * If the result is 0, an exception with the message from the last error is thrown.
+     * </p>
+     * @param result the result value
+     * @param errorState the error state containing the last error
+     * @return the result value
+     */
+    public static int checkResult(int result, MemorySegment errorState) {
+        if (result == 0)
+            throw new IllegalStateException(getErrorMessage(getLastError(errorState)));
+        return result;
+    }
+
+    public static void checkHResult(int hresult) {
+        if (hresult != S_OK)
+            throw new IllegalStateException(getErrorMessage(hresult));
     }
 
     /**

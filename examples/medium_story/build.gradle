@@ -26,5 +26,6 @@ generateWindowsApi {
             "FOLDERID_Desktop",
             "FOLDERID_Programs",
             "FOLDERID_PublicDesktop",
+            "S_OK",
     ]
 }

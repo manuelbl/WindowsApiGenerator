@@ -6,20 +6,18 @@
 //
 package org.example;
 
-import windows.win32.foundation.WIN32_ERROR;
-
 import java.lang.foreign.AddressLayout;
 import java.lang.foreign.Arena;
 import java.lang.foreign.Linker;
 import java.lang.foreign.MemoryLayout;
 import java.lang.foreign.MemorySegment;
-import java.lang.invoke.VarHandle;
 
 import static java.lang.foreign.MemorySegment.NULL;
 import static java.lang.foreign.ValueLayout.ADDRESS;
 import static java.lang.foreign.ValueLayout.JAVA_BYTE;
 import static java.nio.charset.StandardCharsets.UTF_16LE;
 import static windows.win32.foundation.Apis.LocalFree;
+import static windows.win32.foundation.Constants.S_OK;
 import static windows.win32.system.diagnostics.debug.Apis.FormatMessageW;
 import static windows.win32.system.diagnostics.debug.FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_ALLOCATE_BUFFER;
 import static windows.win32.system.diagnostics.debug.FORMAT_MESSAGE_OPTIONS.FORMAT_MESSAGE_FROM_HMODULE;
@@ -33,8 +31,6 @@ public class Windows {
             MemoryLayout.sequenceLayout(Long.MAX_VALUE, JAVA_BYTE));
 
     private static final MemoryLayout errorStateLayout = Linker.Option.captureStateLayout();
-    private static final VarHandle callStateGetLastErrorVarHandle =
-            errorStateLayout.varHandle(MemoryLayout.PathElement.groupElement("GetLastError"));
 
     private static final MemorySegment ntModuleHandle;
 
@@ -46,36 +42,15 @@ public class Windows {
     }
 
     /**
-     * Returns the error code captured using the call state.
-     *
-     * @param callState the call state
-     * @return the error code
-     */
-    public static int getLastError(MemorySegment callState) {
-        return (int) callStateGetLastErrorVarHandle.get(callState, 0);
-    }
-
-    /**
-     * Checks that the previous Windows API call was successful.
+     * Checks the HRESULT code.
      * <p>
-     * Throws an exception with the error message otherwise.
+     * If the code is different from S_OK, throws an exception with the message for the code.
      * </p>
+     * @param hresult the HRESULT code
      */
-    public static void checkSuccessful(MemorySegment errorState) {
-        var lastError = getLastError(errorState);
-        if (lastError != WIN32_ERROR.ERROR_SUCCESS)
-            throw new IllegalStateException(getErrorMessage(lastError));
-    }
-
-    /**
-     * Checks that {@code errorCode} is a successful code.
-     * <p>
-     * Throws an exception with the error message otherwise.
-     * </p>
-     */
-    public static void checkSuccessful(int errorCode) {
-        if (errorCode < 0)
-            throw new IllegalStateException(getErrorMessage(errorCode));
+    public static void checkHResult(int hresult) {
+        if (hresult != S_OK)
+            throw new IllegalStateException(getErrorMessage(hresult));
     }
 
     /**

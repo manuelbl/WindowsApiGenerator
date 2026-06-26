@@ -7,7 +7,6 @@
 package net.codecrete.windowsapi.examples
 
 import windows.win32.foundation.Apis.LocalFree
-import windows.win32.foundation.WIN32_ERROR
 import windows.win32.system.diagnostics.debug.Apis.FormatMessageW
 import windows.win32.system.diagnostics.debug.FORMAT_MESSAGE_OPTIONS
 import windows.win32.system.libraryloader.Apis.GetModuleHandleW
@@ -15,21 +14,18 @@ import java.lang.foreign.*
 import java.lang.foreign.MemorySegment.NULL
 import java.lang.foreign.ValueLayout.ADDRESS
 import java.lang.foreign.ValueLayout.JAVA_BYTE
-import java.lang.invoke.VarHandle
 import java.nio.charset.StandardCharsets.UTF_16LE
 
 object Windows {
     // address layout pointing to an unbounded memory segment
     private val ADDRESS_UNBOUNDED: AddressLayout? = ADDRESS.withTargetLayout(
         MemoryLayout.sequenceLayout(
-            Long.Companion.MAX_VALUE,
+            Long.MAX_VALUE,
             JAVA_BYTE
         )
     )
 
     private val errorStateLayout: MemoryLayout = Linker.Option.captureStateLayout()
-    private val callStateGetLastErrorVarHandle: VarHandle =
-        errorStateLayout.varHandle(MemoryLayout.PathElement.groupElement("GetLastError"))
 
     val ntModuleHandle: MemorySegment
 
@@ -42,32 +38,16 @@ object Windows {
     }
 
     /**
-     * Returns the error code captured using the call state.
+     * Checks the HRESULT value.
      *
-     * @param callState the call state
-     * @return the error code
-     */
-    fun getLastError(callState: MemorySegment): Int {
-        return callStateGetLastErrorVarHandle.get(callState, 0) as Int
-    }
-
-    /**
-     * Checks that the previous Windows API call was successful.
+     * If the value indicates an error, an exception is raised.
      *
-     * Throws an exception with the error message otherwise.
+     * @param hresult the HRESULT value
+     * @return the HRESULT value
      */
-    fun checkSuccessful(errorState: MemorySegment) {
-        val lastError = getLastError(errorState)
-        check(lastError == WIN32_ERROR.ERROR_SUCCESS) { getErrorMessage(lastError) }
-    }
-
-    /**
-     * Checks that error code is a successful code.
-     *
-     * Throws an exception with the error message otherwise.
-     */
-    fun checkSuccessful(errorCode: Int) {
-        check(errorCode >= 0) { getErrorMessage(errorCode) }
+    fun checkHResult(hresult: Int): Int {
+        check(hresult >= 0) { getErrorMessage(hresult) }
+        return hresult
     }
 
     /**

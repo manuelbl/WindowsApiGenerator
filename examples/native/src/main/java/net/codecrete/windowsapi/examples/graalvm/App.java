@@ -30,10 +30,9 @@ import static java.lang.foreign.ValueLayout.JAVA_CHAR;
 import static java.lang.foreign.ValueLayout.JAVA_INT;
 import static java.lang.foreign.ValueLayout.JAVA_LONG;
 import static java.nio.charset.StandardCharsets.UTF_16LE;
-import static net.codecrete.windowsapi.examples.graalvm.Windows.getErrorMessage;
-import static net.codecrete.windowsapi.examples.graalvm.Windows.getLastError;
-import static net.codecrete.windowsapi.examples.graalvm.Windows.throwError;
-import static windows.win32.foundation.WIN32_ERROR.ERROR_SUCCESS;
+import static net.codecrete.windowsapi.examples.graalvm.Windows.checkErrorCode;
+import static net.codecrete.windowsapi.examples.graalvm.Windows.checkHResult;
+import static net.codecrete.windowsapi.examples.graalvm.Windows.checkResult;
 import static windows.win32.storage.filesystem.Apis.GetVolumePathNameW;
 import static windows.win32.system.com.Apis.CoCreateInstance;
 import static windows.win32.system.com.Apis.CoInitializeEx;
@@ -75,9 +74,7 @@ public class App {
             System.out.println("Windows:");
             var errorState = arena.allocate(errorStateLayout);
             var enumFuncUpcall = WNDENUMPROC.allocate(arena, App::windowEnumerationFunction);
-            var res = EnumWindows(errorState, enumFuncUpcall, 0);
-            if (res == 0)
-                throwError(errorState);
+            checkResult(EnumWindows(errorState, enumFuncUpcall, 0), errorState);
         }
     }
 
@@ -86,16 +83,14 @@ public class App {
             var errorState = arena.allocate(errorStateLayout);
 
             var windowInfo = WINDOWINFO.allocate(arena);
-            var res = GetWindowInfo(errorState, windowHandle, windowInfo);
-            if (res == 0)
-                throwError(errorState);
+            checkResult(GetWindowInfo(errorState, windowHandle, windowInfo), errorState);
 
             var dwStyle = WINDOWINFO.dwStyle(windowInfo);
             if ((dwStyle & WS_VISIBLE) == 0)
                 return 1; // window is not visible
 
             var titleBarTextBuffer = arena.allocate(JAVA_CHAR, 300);
-            res = GetWindowTextW(errorState, windowHandle, titleBarTextBuffer, 300);
+            var res = GetWindowTextW(errorState, windowHandle, titleBarTextBuffer, 300);
             if (res == 0)
                 return 1; // window without title bar and likely size 0
 
@@ -121,11 +116,7 @@ public class App {
             String currentDirectory = new File("").getAbsolutePath();
             var filename = arena.allocateFrom(currentDirectory, UTF_16LE);
             var buffer = arena.allocate(JAVA_CHAR, 500);
-            if (GetVolumePathNameW(errorState, filename, buffer, 500) == 0) {
-                // call has failed
-                int errorCode = getLastError(errorState);
-                throw new IllegalStateException(getErrorMessage(errorCode));
-            }
+            checkResult(GetVolumePathNameW(errorState, filename, buffer, 500), errorState);
 
             String volumePath = buffer.getString(0, UTF_16LE);
             System.out.println("Volume path: " + volumePath);
@@ -135,7 +126,7 @@ public class App {
     static void getCommonProgramsFolder() {
         try (var arena = Arena.ofConfined()) {
             var out = arena.allocate(ADDRESS);
-            SHGetKnownFolderPath(FOLDERID_CommonPrograms(), 0, NULL, out);
+            checkHResult(SHGetKnownFolderPath(FOLDERID_CommonPrograms(), 0, NULL, out));
             var str = out.get(ADDRESS, 0).reinterpret(1000, arena, Apis::CoTaskMemFree);
             String folder = str.getString(0, UTF_16LE);
             System.out.println("Common programs folder: " + folder);
@@ -145,15 +136,14 @@ public class App {
     static void getWindowsVersion() {
         try (var arena = Arena.ofConfined()) {
             var keyHandleHolder = arena.allocate(ADDRESS);
-            var status = RegOpenKeyExW(
-                    HKEY_LOCAL_MACHINE,
-                    arena.allocateFrom("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", UTF_16LE),
-                    0,
-                    KEY_QUERY_VALUE,
-                    keyHandleHolder
-            );
-            if (status != ERROR_SUCCESS)
-                throw new IllegalArgumentException(Windows.getErrorMessage(status));
+            checkErrorCode(
+                    RegOpenKeyExW(
+                        HKEY_LOCAL_MACHINE,
+                        arena.allocateFrom("SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", UTF_16LE),
+                        0,
+                        KEY_QUERY_VALUE,
+                        keyHandleHolder
+            ));
 
             var keyHandle = keyHandleHolder.get(ADDRESS, 0);
 
@@ -161,23 +151,20 @@ public class App {
             var sizeHolder = arena.allocate(JAVA_INT);
             var data = arena.allocate(JAVA_LONG, 200);
             sizeHolder.set(JAVA_INT, 0L, (int) data.byteSize());
-            status = RegQueryValueExW(
-                    keyHandle,
-                    arena.allocateFrom("ProductName", UTF_16LE),
-                    NULL,
-                    typeHolder,
-                    data,
-                    sizeHolder
-            );
-            if (status != ERROR_SUCCESS)
-                throw new IllegalArgumentException(Windows.getErrorMessage(status));
+            checkErrorCode(
+                    RegQueryValueExW(
+                        keyHandle,
+                        arena.allocateFrom("ProductName", UTF_16LE),
+                        NULL,
+                        typeHolder,
+                        data,
+                        sizeHolder
+            ));
 
             var value = Windows.getUtf16String(data, 0, sizeHolder.get(JAVA_INT, 0));
             System.out.println("Windows version: " + value);
 
-            status = RegCloseKey(keyHandle);
-            if (status != ERROR_SUCCESS)
-                throw new IllegalArgumentException(Windows.getErrorMessage(status));
+            checkErrorCode(RegCloseKey(keyHandle));
         }
     }
 
@@ -197,46 +184,34 @@ public class App {
                 var errorState = arena.allocate(captureStateLayout());
                 var hwnd = FindWindowW(errorState, NULL, arena.allocateFrom(WINDOW_TITLE, UTF_16LE));
                 if (hwnd.address() == 0L)
-                    throwError(errorState);
+                    throw new IllegalStateException("Window titled " + WINDOW_TITLE + " not found.");
 
                 // initialize COM (as this is a new thread)
-                var hr = CoInitializeEx(NULL, COINIT.MULTITHREADED);
-                if (hr != 0)
-                    throwError(hr);
+                checkHResult(CoInitializeEx(NULL, COINIT.MULTITHREADED));
 
                 // create instance of ITaskbarList, requesting interface ITaskbarList3
                 var taskbarListOut = arena.allocate(ADDRESS);
-                hr = CoCreateInstance(TaskbarList(), NULL, CLSCTX.ALL, ITaskbarList3.iid(), taskbarListOut);
-                if (hr != 0)
-                    throwError(hr);
+                checkHResult(CoCreateInstance(TaskbarList(), NULL, CLSCTX.ALL, ITaskbarList3.iid(), taskbarListOut));
 
                 // Wrap instance in easy-to-use Java object
                 taskbarList = ITaskbarList3.wrap(taskbarListOut.get(ADDRESS, 0));
 
                 // Initializes the taskbar list object. This method must be called before any other ITaskbarList methods can be called.
-                hr = taskbarList.HrInit();
-                if (hr != 0)
-                    throwError(hr);
+                checkHResult(taskbarList.HrInit());
 
                 // Enable display of progress
-                hr = taskbarList.SetProgressState(hwnd, TBPFLAG.TBPF_NORMAL);
-                if (hr != 0)
-                    throwError(hr);
+                checkHResult(taskbarList.SetProgressState(hwnd, TBPFLAG.TBPF_NORMAL));
 
                 for (int i = 0; i < 100; i += 5) {
                     // Set progress value
-                    hr = taskbarList.SetProgressValue(hwnd, i, 100);
-                    if (hr != 0)
-                        throwError(hr);
+                    checkHResult(taskbarList.SetProgressValue(hwnd, i, 100));
 
                     // Sleep
                     sleep(200);
                 }
 
                 // Disable display of progress
-                hr = taskbarList.SetProgressState(hwnd, TBPFLAG.TBPF_NOPROGRESS);
-                if (hr != 0)
-                    throwError(hr);
+                checkHResult(taskbarList.SetProgressState(hwnd, TBPFLAG.TBPF_NOPROGRESS));
             }
         } finally {
             if (taskbarList != null)
@@ -258,13 +233,13 @@ public class App {
         try (var arena = Arena.ofConfined()) {
             var errorState = arena.allocate(errorStateLayout);
 
-            var result = MessageBoxW(
+            var result = checkResult(MessageBoxW(
                     errorState,
                     NULL,
-                    arena.allocateFrom("Watch the taskbar...", UTF_16LE),
+                    arena.allocateFrom("Look, the taskbar...", UTF_16LE),
                     arena.allocateFrom(WINDOW_TITLE, UTF_16LE),
                     MESSAGEBOX_STYLE.MB_OKCANCEL
-            );
+            ), errorState);
 
             switch (result) {
                 case MESSAGEBOX_RESULT.IDOK:

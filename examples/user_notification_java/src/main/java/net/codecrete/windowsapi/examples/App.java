@@ -11,7 +11,7 @@ import java.lang.foreign.Arena;
 import static java.lang.foreign.MemorySegment.NULL;
 import static java.lang.foreign.ValueLayout.ADDRESS;
 import static java.nio.charset.StandardCharsets.UTF_16LE;
-import static net.codecrete.windowsapi.examples.Windows.checkSuccessful;
+import static net.codecrete.windowsapi.examples.Windows.checkHResult;
 import static windows.win32.system.com.Apis.CoCreateInstance;
 import static windows.win32.system.com.Apis.CoInitializeEx;
 import static windows.win32.ui.shell.Constants.UserNotification;
@@ -19,17 +19,15 @@ import static windows.win32.ui.shell.NOTIFY_ICON_INFOTIP_FLAGS.NIIF_INFO;
 import static windows.win32.ui.shell.NOTIFY_ICON_INFOTIP_FLAGS.NIIF_RESPECT_QUIET_TIME;
 
 public class App {
-    public static void main(String[] args) {
+    static void main() {
         // Initialize COM with apartment-threaded object concurrency
-        var result = CoInitializeEx(NULL, COINIT.APARTMENTTHREADED);
-        checkSuccessful(result);
+        checkHResult(CoInitializeEx(NULL, COINIT.APARTMENTTHREADED));
 
         try (var arena = Arena.ofConfined()) {
 
             // Create a user notification instance (implemented by Windows)
             var holder = arena.allocate(ADDRESS);
-            result = CoCreateInstance(UserNotification(), NULL, CLSCTX.ALL, IUserNotification2.iid(), holder);
-            checkSuccessful(result);
+            checkHResult(CoCreateInstance(UserNotification(), NULL, CLSCTX.ALL, IUserNotification2.iid(), holder));
 
             // Wrap the COM instance in an easy-to-use Java object
             var notification = IUserNotification2.wrap(holder.get(ADDRESS, 0));
@@ -37,8 +35,7 @@ public class App {
             // Configure a balloon info
             var title = arena.allocateFrom("Windows API", UTF_16LE);
             var text = arena.allocateFrom("Hello from Java", UTF_16LE);
-            result = notification.SetBalloonInfo(title, text, NIIF_INFO | NIIF_RESPECT_QUIET_TIME);
-            checkSuccessful(result);
+            checkHResult(notification.SetBalloonInfo(title, text, NIIF_INFO | NIIF_RESPECT_QUIET_TIME));
 
             // Create an IQueryContinue instance (implemented in Java)
             var queryContinue = new QueryContinueObject();
@@ -51,8 +48,7 @@ public class App {
             callback.setThisPointer(callbackSegment);
 
             // Show the notification
-            result = notification.Show(queryContinueSegment, 5000, callbackSegment);
-            checkSuccessful(result);
+            checkHResult(notification.Show(queryContinueSegment, 5000, callbackSegment));
 
             notification.Release();
         }
