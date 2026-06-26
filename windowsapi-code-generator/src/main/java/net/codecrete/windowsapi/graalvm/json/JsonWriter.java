@@ -54,6 +54,13 @@ public class JsonWriter {
         this.writer = writer;
     }
 
+    /**
+     * Flushes the writer.
+     * <p>
+     * Any buffered data is written to the underlying writer.
+     * </p>
+     * @throws IOException if there was a problem writing to the output
+     */
     public void flush() throws IOException {
         writer.flush();
     }

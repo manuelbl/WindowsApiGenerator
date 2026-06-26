@@ -1,0 +1,122 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>net.codecrete.windows-api</groupId>
+    <artifactId>native-example</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0-SNAPSHOT</version>
+
+    <name>native_example</name>
+    <description>Example showing how to build a native application with GraalVM</description>
+    <url>https://github.com/manuelbl/WindowsApiGenerator</url>
+
+    <properties>
+        <maven.compiler.target>25</maven.compiler.target>
+        <maven.compiler.source>25</maven.compiler.source>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <native.maven.plugin.version>0.11.0</native.maven.plugin.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.14.0</version>
+                <configuration>
+                    <fork>true</fork>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.4.2</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>net.codecrete.windowsapi.examples.graalvm.App</mainClass>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>net.codecrete.windows-api</groupId>
+                <artifactId>windowsapi-maven-plugin</artifactId>
+                <version>0.8.5</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>windows-api</goal>
+                        </goals>
+                        <configuration>
+                            <comInterfaces>
+                                <comInterface>ITaskbarList3</comInterface>
+                            </comInterfaces>
+                            <functions>
+                                <function>CoCreateInstance</function>
+                                <function>CoInitializeEx</function>
+                                <function>CoTaskMemFree</function>
+                                <function>FindWindowW</function>
+                                <function>FormatMessageW</function>
+                                <function>GetModuleHandleW</function>
+                                <function>GetVolumePathNameW</function>
+                                <function>LocalFree</function>
+                                <function>MessageBoxW</function>
+                                <function>RegCloseKey</function>
+                                <function>RegOpenKeyExW</function>
+                                <function>RegQueryValueExW</function>
+                                <function>SHGetKnownFolderPath</function>
+                            </functions>
+                            <constants>
+                                <constant>FOLDERID_CommonPrograms</constant>
+                                <constant>FOLDERID_Desktop</constant>
+                                <constant>FOLDERID_Programs</constant>
+                                <constant>FOLDERID_PublicDesktop</constant>
+                                <constant>HKEY_LOCAL_MACHINE</constant>
+                                <constant>TaskbarList</constant>
+                            </constants>
+                            <reachabilityMetadataFile>src/main/resources/META-INF/native-image/net.codecrete.windows-api/native-example/reachability-metadata.json</reachabilityMetadataFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>3.8.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <profiles>
+        <profile>
+            <id>native</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.graalvm.buildtools</groupId>
+                        <artifactId>native-maven-plugin</artifactId>
+                        <version>${native.maven.plugin.version}</version>
+                        <extensions>true</extensions>
+                        <executions>
+                            <execution>
+                                <id>build-native</id>
+                                <goals>
+                                    <goal>compile-no-fork</goal>
+                                </goals>
+                                <phase>package</phase>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+</project>

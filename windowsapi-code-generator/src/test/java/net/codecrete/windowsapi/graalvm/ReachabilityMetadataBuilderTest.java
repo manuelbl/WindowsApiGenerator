@@ -60,6 +60,42 @@ class ReachabilityMetadataBuilderTest {
     }
 
     @Test
+    void build_createsDowncallsForFunctions() {
+        var scope = scope(
+                Set.of("MessageBoxW", "EnumWindows", "GetWindowTextW", "GetWindowInfo", "FormatMessageW", "GetModuleHandleW", "LocalFree"),
+                Set.of()
+        );
+
+        var reachabilityMetadata = new ReachabilityMetadataBuilder(scope.methods(), scope.getTransitiveTypeScope(), "").build();
+
+        // sorted by returnType, then parameterTypes, then captureCallState
+        assertThat(reachabilityMetadata.foreign().downcalls()).containsExactly(
+                // FormatMessageW
+                new Downcall("jint", List.of("jint", "void*", "jint", "jint", "void*", "jint", "void*"), CAPTURE),
+                // EnumWindows
+                new Downcall("jint", List.of("void*", "jlong"), CAPTURE),
+                // GetWindowInfo
+                new Downcall("jint", List.of("void*", "void*"), CAPTURE),
+                // GetWindowTextW
+                new Downcall("jint", List.of("void*", "void*", "jint"), CAPTURE),
+                // MessageBoxW
+                new Downcall("jint", List.of("void*", "void*", "void*", "jint"), CAPTURE),
+                // GetModuleHandleW /LocalFree
+                new Downcall("void*", List.of("void*"), CAPTURE)
+        );
+
+        assertThat(reachabilityMetadata.foreign().upcalls()).containsExactly(
+                // WNDENUMPROC
+                new Upcall("jint", List.of("void*", "jlong"))
+        );
+
+        assertThat(reachabilityMetadata.reflection()).containsExactly(
+                new ReflectionObject("windows.win32.ui.windowsandmessaging.WNDENUMPROC$Function",
+                        List.of(new Method("invoke", List.of("java.lang.foreign.MemorySegment", "long"))))
+        );
+    }
+
+    @Test
     void build_createsUpcallsForCallbackFunctions() {
         var scope = scope(Set.of("RegisterClassW", "EnumWindows"), Set.of());
 
