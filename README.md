@@ -55,6 +55,7 @@ and use COM objects. The generator is available as a Maven and a Gradle plugin.
 - [Generated Code](docs/generated_code.md)
 - [Working with COM Interfaces](docs/com_interfaces.md)
 - [Native Images with GraalVM](docs/native_images.md)
+- [Releasing](docs/releasing.md)
 
 
 ## Windows API Metadata

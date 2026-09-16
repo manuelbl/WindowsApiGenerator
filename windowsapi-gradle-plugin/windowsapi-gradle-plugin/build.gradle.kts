@@ -6,8 +6,6 @@ plugins {
 
     alias(libs.plugins.kotlin.jvm)
 
-    signing
-
     id("com.gradleup.shadow") version "8.3.6"
 }
 
@@ -90,10 +88,6 @@ tasks.named<Task>("check") {
 
 tasks.shadowJar {
     archiveClassifier = ""
-}
-
-signing {
-    useGpgCmd()
 }
 
 publishing {
