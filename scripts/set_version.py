@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 """Sets the version of the code generator, the Maven plug-in and the Gradle plug-in.
 
-Usage: scripts/set_version.py <version>
+Usage: scripts/set_version.py [--check] <version>
 
 The version must be of the form X.Y.Z or X.Y.Z-SNAPSHOT. It is applied to the three
 artifacts and to the integration tests, which always build against the current
 development version. The examples and the documentation are not touched; they refer
 to the released version and are updated with sync_example_versions.py.
+
+With --check, no file is modified. Instead, the script fails unless all these places
+already carry the given version. The release workflow uses it to verify the tag.
 """
 
 import re
@@ -35,14 +38,27 @@ REPLACEMENTS = [
 ]
 
 
-def replace_version(path, pattern, expected_matches, version):
-    """Replaces the version matched by group 1 of the pattern, in the given file."""
-    file = ROOT / path
-    text = file.read_text(encoding="utf-8")
+def find_versions(path, pattern, expected_matches):
+    """Returns the file's text and the matches of the pattern (group 1 is the version)."""
+    text = (ROOT / path).read_text(encoding="utf-8")
     matches = list(re.finditer(pattern, text, flags=re.M))
     if len(matches) != expected_matches:
         raise SystemExit(
             f"{path}: expected {expected_matches} match(es) of /{pattern}/, found {len(matches)}")
+    return text, matches
+
+
+def check_version(path, pattern, expected_matches, version):
+    """Returns an error message for each version matched by the pattern that differs from the given one."""
+    _, matches = find_versions(path, pattern, expected_matches)
+    return [f"{path}: found version {m.group(1)}, expected {version}"
+            for m in matches if m.group(1) != version]
+
+
+def replace_version(path, pattern, expected_matches, version):
+    """Replaces the version matched by group 1 of the pattern, in the given file."""
+    text, matches = find_versions(path, pattern, expected_matches)
+    file = ROOT / path
 
     for match in reversed(matches):
         text = text[:match.start(1)] + version + text[match.end(1):]
@@ -50,12 +66,24 @@ def replace_version(path, pattern, expected_matches, version):
 
 
 def main():
-    if len(sys.argv) != 2:
-        raise SystemExit(f"usage: {sys.argv[0]} <version>")
+    args = sys.argv[1:]
+    check = args[:1] == ["--check"]
+    if check:
+        args = args[1:]
+    if len(args) != 1:
+        raise SystemExit(f"usage: {sys.argv[0]} [--check] <version>")
 
-    version = sys.argv[1]
+    version = args[0]
     if not VERSION_PATTERN.match(version):
         raise SystemExit(f"invalid version: {version} (expected X.Y.Z or X.Y.Z-SNAPSHOT)")
+
+    if check:
+        errors = [error for path, pattern, expected_matches in REPLACEMENTS
+                  for error in check_version(path, pattern, expected_matches, version)]
+        if errors:
+            raise SystemExit("\n".join(errors))
+        print(f"version is {version}")
+        return
 
     for path, pattern, expected_matches in REPLACEMENTS:
         replace_version(path, pattern, expected_matches, version)
