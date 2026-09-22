@@ -25,7 +25,7 @@ and configure an execution:
         <plugin>
         <groupId>net.codecrete.windows-api</groupId>
         <artifactId>windowsapi-maven-plugin</artifactId>
-        <version>0.8.6</version>
+        <version>0.8.7</version>
         <executions>
             <execution>
                 <goals>
@@ -90,7 +90,7 @@ originating from previous generation runs with a different configuration.
 <plugin>
     <groupId>net.codecrete.windows-api</groupId>
     <artifactId>windowsapi-maven-plugin</artifactId>
-    <version>0.8.6</version>
+    <version>0.8.7</version>
     <executions>
         <execution>
         <goals>

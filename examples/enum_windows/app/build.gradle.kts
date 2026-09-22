@@ -2,7 +2,7 @@ plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
     alias(libs.plugins.kotlin.jvm) version "2.3.0"
 
-    id("net.codecrete.windows-api") version "0.8.6"
+    id("net.codecrete.windows-api") version "0.8.7"
 
     // Java support
     java
