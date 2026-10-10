@@ -162,6 +162,7 @@ class CustomAttributeDecoder extends Decoder {
     private static final Set<QualifiedName> ignoredParamAttributes = Set.of(
             new QualifiedName(METADATA, "ComOutPtrAttribute"),
             new QualifiedName(METADATA, "ConstAttribute"),
+            new QualifiedName(METADATA, "ContainsInteriorPointersAttribute"),
             DOCUMENTATION_ATTRIBUTE,
             new QualifiedName(METADATA, "DoNotReleaseAttribute"),
             new QualifiedName(METADATA, "FreeWithAttribute"),
