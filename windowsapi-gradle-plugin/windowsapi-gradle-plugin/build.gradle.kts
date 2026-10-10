@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "net.codecrete.windows-api"
-version = "0.8.8"
+version = "0.8.9"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
@@ -27,7 +27,7 @@ repositories {
 }
 
 dependencies {
-    implementation("net.codecrete.windows-api:code-generator:0.8.8")
+    implementation("net.codecrete.windows-api:code-generator:0.8.9")
 }
 
 testing {
