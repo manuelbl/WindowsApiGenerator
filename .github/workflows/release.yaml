@@ -51,8 +51,10 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@v5
     # The GPG key is used in memory by the Bouncy Castle signer; no keyring is needed.
+    # The Maven Wrapper pins the Maven version: Maven 3.10 adds local repository
+    # metadata to the Central bundle, which Central rejects.
     - name: Publish library to Maven Central
-      run: mvn -Prelease -Dgpg.signer=bc -DskipTests deploy
+      run: ./mvnw -Prelease -Dgpg.signer=bc -DskipTests deploy
       working-directory: ./windowsapi-code-generator
       env:
         CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}
@@ -60,7 +62,7 @@ jobs:
         MAVEN_GPG_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
         MAVEN_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
     - name: Publish Maven plug-in to Maven Central
-      run: mvn -Prelease -Dgpg.signer=bc -DskipTests deploy
+      run: ./mvnw -Prelease -Dgpg.signer=bc -DskipTests deploy
       working-directory: ./windowsapi-maven-plugin
       env:
         CENTRAL_USERNAME: ${{ secrets.CENTRAL_USERNAME }}

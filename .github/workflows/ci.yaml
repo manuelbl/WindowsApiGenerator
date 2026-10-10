@@ -33,13 +33,13 @@ jobs:
         echo "JAVA_HOME=$JAVA_HOME_21_X64" >> "$GITHUB_ENV"
         echo "$JAVA_HOME_21_X64/bin" >> "$GITHUB_PATH"
     - name: Build library
-      run: mvn install
+      run: ./mvnw install
       working-directory: ./windowsapi-code-generator
     - name: Build Maven plug-in
       run: |
         echo "JAVA_HOME=$JAVA_HOME_21_X64" >> "$GITHUB_ENV"
         echo "$JAVA_HOME_21_X64/bin" >> "$GITHUB_PATH"
-        mvn install
+        ./mvnw install
       working-directory: ./windowsapi-maven-plugin
     - name: Build Gradle plug-in
       run: |
